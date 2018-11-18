@@ -28,6 +28,9 @@ class POI(models.Model):
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
 
+    def __str__(self):
+        return self.name
+
 
 class Event(models.Model):
     title = models.CharField(max_length=250)
@@ -39,12 +42,7 @@ class Event(models.Model):
     is_all_day = models.BooleanField(default=False)
     is_recurring = models.BooleanField(default=False)
     has_end_date = models.BooleanField(default=False)
-    end_date = models.DateField(null=True, default=None, blank=not has_end_date)
-
-    def clean(self):
-        if self.end_date <= self.date.date():
-            raise ValidationError('Enddatum liegt nicht nach dem Startdatum!')
-
+    end_date = models.DateField(null=True, default=None, blank=True)
     FREQUENCY = (
         ('daily', 'Täglich'),
         ('weekly', 'Wöchentlich'),
@@ -52,3 +50,11 @@ class Event(models.Model):
         ('yearly', 'Jährlich')
     )
     frequency = models.CharField(max_length=7, choices=FREQUENCY, null=True, blank=True, default=None)
+
+    def clean(self):
+        if self.end_date is not None:
+            if self.end_date <= self.date.date():
+                raise ValidationError('Enddatum liegt nicht nach dem Startdatum!')
+
+    def __str__(self):
+        return self.title

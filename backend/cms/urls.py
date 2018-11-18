@@ -2,7 +2,7 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.auth import views as auth_views
-from .views import general, registration, pages
+from .views import general, registration, pages, events
 
 
 urlpatterns = [
@@ -17,7 +17,7 @@ urlpatterns = [
         pages.PageView.as_view(),
         name='delete_page'),
     url(r'pages/archive$', pages.archive, name='archived_pages'),
-
+    url(r'events/', events.EventListView.as_view(), name='events'),
     url(r'^login/$', registration.login, name='login'),
     url(r'^logout/$', registration.logout, name='logout'),
     url(r'^password_reset/$',

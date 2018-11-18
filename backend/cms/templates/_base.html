@@ -105,7 +105,7 @@
             <i data-feather="layout" class="absolute"></i>
             Seiten
         </a>
-        <a href="" class="relative block text-grey-light hover:text-grey-darker hover:bg-integreat">
+        <a href="{% url 'events' %}" class="relative block text-grey-light hover:text-grey-darker hover:bg-integreat {% if current_menu_item  == 'events' %}active{% endif %}">
             <i data-feather="calendar" class="absolute"></i>
             Veranstaltungen
         </a>
@@ -137,7 +137,7 @@
 </nav>
 <main class="relative">
     <div class="p-6">
-        {% include "messages.html" %}   
+        {% include "messages.html" %}
         {% block content %}{% endblock content %}
     </div>
 </main>

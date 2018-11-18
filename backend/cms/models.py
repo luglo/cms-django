@@ -2,26 +2,6 @@ from datetime import timedelta
 
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils.deconstruct import deconstructible
-
-
-@deconstructible
-class EndDateValidator:
-    start_date = None
-    message = 'Enddatum liegt nicht nach dem Startdatum!'
-
-    def __init__(self, start_date=None):
-        if start_date is not None:
-            self.start_date = start_date
-
-    def __call__(self, value):
-        if value <= self.start_date:
-            raise ValidationError(self.message)
-
-    def __eq__(self, other):
-        return (isinstance(other, EnddateValidator) and
-                other.message == self.message and
-                other.start_date == self.start_date)
 
 
 class Instance(models.Model):
@@ -52,15 +32,19 @@ class POI(models.Model):
 class Event(models.Model):
     title = models.CharField(max_length=250)
     description = models.TextField(default='')
-    location = models.ForeignKey(POI, on_delete=models.PROTECT, null=True, blank=True)
+    location = models.ForeignKey(to='POI', on_delete=models.PROTECT, null=True, blank=True)
     date = models.DateTimeField()
     duration = models.DurationField(default=timedelta(hours=1))
     picture = models.ImageField(null=True, blank=True)
     is_all_day = models.BooleanField(default=False)
     is_recurring = models.BooleanField(default=False)
     has_end_date = models.BooleanField(default=False)
-    end_date = models.DateField(validators=[EndDateValidator(start_date=date)], default=None,
-                                blank=not has_end_date)
+    end_date = models.DateField(null=True, default=None, blank=not has_end_date)
+
+    def clean(self):
+        if self.end_date <= self.date.date():
+            raise ValidationError('Enddatum liegt nicht nach dem Startdatum!')
+
     FREQUENCY = (
         ('daily', 'Täglich'),
         ('weekly', 'Wöchentlich'),

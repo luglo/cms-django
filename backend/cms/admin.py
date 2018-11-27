@@ -4,7 +4,8 @@ from .models.event import Event
 from .models.poi import POI
 from .models.site import Site
 
-
+'''
+# Commented out these lines because of changes in the models
 class EventAdmin(admin.ModelAdmin):
     list_display = ('title', 'date', 'get_location_name')
     list_filter = ['date', 'location__name']
@@ -26,5 +27,6 @@ class POIAdmin(admin.ModelAdmin):
 
 admin.site.register(POI, POIAdmin)
 admin.site.register(Event, EventAdmin)
+'''
 
 admin.site.register(Site)

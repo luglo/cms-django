@@ -1,9 +1,11 @@
-from django.db import models
 from datetime import timedelta
 
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.db import models
+
+
 class Event(models.Model):
-    title = models.CharField(max_length=250)
-    description = models.TextField(default='')
     location = models.ForeignKey(to='POI', on_delete=models.PROTECT, null=True, blank=True)
     date = models.DateTimeField()
     duration = models.DurationField(default=timedelta(hours=1))
@@ -26,4 +28,37 @@ class Event(models.Model):
                 raise ValidationError('Enddatum liegt nicht nach dem Startdatum!')
 
     def __str__(self):
-        return self.title
+        return self.event_translations.filter(event_id=self.id, language='de').first().title
+
+    def get_translations(self):
+        return self.event_translations.all()
+
+    @classmethod
+    def get_list_view(cls):
+        event_translations = EventTranslation.objects.filter(
+            language='de'
+        ).select_related('user')
+        events = cls.objects.all().prefetch_related(models.Prefetch(
+            'event_translations',
+            queryset=event_translations)
+        ).filter(event_translations__language='de')
+        return events
+
+
+class EventTranslation(models.Model):
+    STATUS = (
+        ('draft', 'Entwurf'),
+        ('review', 'Ausstehender Review'),
+        ('public', 'Veröffentlicht'),
+    )
+    status = models.CharField(max_length=10, choices=STATUS, default='draft')
+    title = models.CharField(max_length=250)
+    description = models.TextField()
+    permalink = models.CharField(max_length=60)
+    language = models.CharField(max_length=2)
+    version = models.PositiveIntegerField(default=0)
+    active_version = models.BooleanField(default=False)
+    event = models.ForeignKey(to='Event', related_name='event_translations')
+    pub_date = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User)

@@ -1,14 +1,12 @@
 from django.contrib import admin
 
-from .models.event import Event
-from .models.poi import POI
 from .models.site import Site
 
 '''
 # Commented out these lines because of changes in the models
 class EventAdmin(admin.ModelAdmin):
-    list_display = ('title', 'date', 'get_location_name')
-    list_filter = ['date', 'location__name']
+    list_display = ('title', 'start_date', 'get_location_name')
+    list_filter = ['start_date', 'location__name']
     search_fields = ['title', 'description', 'get_location_name']
 
     def get_location_name(self, obj):

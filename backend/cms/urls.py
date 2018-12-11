@@ -1,9 +1,9 @@
+from django.conf import settings
 from django.conf.urls import url
 from django.conf.urls.static import static
-from django.conf import settings
 from django.contrib.auth import views as auth_views
-from .views import general, registration, pages, events
 
+from .views import general, registration, pages, events
 
 urlpatterns = [
     url(r'^$', general.DashboardView.as_view(), name='dashboard'),
@@ -17,7 +17,12 @@ urlpatterns = [
         pages.PageView.as_view(),
         name='delete_page'),
     url(r'pages/archive$', pages.archive, name='archived_pages'),
-    url(r'events/', events.EventListView.as_view(), name='events'),
+                  url(r'events/$', events.EventListView.as_view(), name='events'),
+                  url(r'events/new$', events.EventView.as_view(), name='new_event'),
+                  url(r'^events/(?P<event_translation_id>[0-9]+)$', events.EventView.as_view(), name='edit_event'),
+                  url(r'events/(?P<event_translation_id>[0-9]+)/delete$',
+                      events.EventView.as_view(),
+                      name='delete_event'),
     url(r'^login/$', registration.login, name='login'),
     url(r'^logout/$', registration.logout, name='logout'),
     url(r'^password_reset/$',

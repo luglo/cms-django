@@ -1,5 +1,3 @@
-from datetime import timedelta
-
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -7,13 +5,13 @@ from django.db import models
 
 class Event(models.Model):
     location = models.ForeignKey(to='POI', on_delete=models.PROTECT, null=True, blank=True)
-    date = models.DateTimeField()
-    duration = models.DurationField(default=timedelta(hours=1))
-    picture = models.ImageField(null=True, blank=True)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    picture = models.ImageField(null=True, blank=True, upload_to='events/%Y/%m/%d')
     is_all_day = models.BooleanField(default=False)
     is_recurring = models.BooleanField(default=False)
-    has_end_date = models.BooleanField(default=False)
-    end_date = models.DateField(null=True, default=None, blank=True)
+    has_recurring_end_date = models.BooleanField(default=False)
+    recurring_end_date = models.DateField(null=True, default=None, blank=True)
     FREQUENCY = (
         ('daily', 'Täglich'),
         ('weekly', 'Wöchentlich'),
@@ -23,8 +21,11 @@ class Event(models.Model):
     frequency = models.CharField(max_length=7, choices=FREQUENCY, null=True, blank=True, default=None)
 
     def clean(self):
-        if self.end_date is not None:
-            if self.end_date <= self.date.date():
+        if self.recurring_end_date:
+            if self.recurring_end_date <= self.start_date.date():
+                raise ValidationError('Wiederholungsenddatum liegt nicht nach dem Startdatum!')
+        if self.end_date:
+            if self.end_date <= self.start_date:
                 raise ValidationError('Enddatum liegt nicht nach dem Startdatum!')
 
     def __str__(self):

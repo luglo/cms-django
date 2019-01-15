@@ -1,49 +1,46 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+from cms.models import Site, Language
+
 
 class POI(models.Model):
+    site = models.ForeignKey(Site)
     address = models.CharField(max_length=250)
     postcode = models.CharField(max_length=10)
     city = models.CharField(max_length=250)
     region = models.CharField(max_length=250)
     country = models.CharField(max_length=250)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6)
-
-    def __str__(self):
-        return self.poi_translations.filter(poi_id=self.id, language='de').first().name
-
-    def get_translations(self):
-        return self.poi_translations
+    latitude = models.FloatField()
+    longitude = models.FloatField()
 
     @classmethod
     def get_list_view(cls):
         poi_translations = POITranslation.objects.filter(
             language='de'
         ).select_related('user')
-        pois = cls.objects.all().prefetch_related(models.Prefetch(
-            'poi_translations',
-            queryset=poi_translations)
+        pois = cls.objects.all().prefetch_related(
+            models.Prefetch('poi_translations', queryset=poi_translations)
         ).filter(poi_translations__language='de')
 
         return pois
 
 
 class POITranslation(models.Model):
+    title = models.CharField(max_length=250)
+    poi = models.ForeignKey(POI, related_name='poi_translations')
+    permalink = models.CharField(max_length=60)
     STATUS = (
         ('draft', 'Entwurf'),
-        ('review', 'Ausstehender Review'),
-        ('public', 'Veröffentlicht'),
+        ('in-review', 'Ausstehender Review'),
+        ('reviewed', 'Review abgeschlossen'),
     )
-    status = models.CharField(max_length=10, choices=STATUS, default='draft')
-    name = models.CharField(max_length=250)
+    status = models.CharField(max_length=9, choices=STATUS, default='draft')
     description = models.TextField()
-    permalink = models.CharField(max_length=60)
-    language = models.CharField(max_length=2)
+    language = models.ForeignKey(Language)
     version = models.PositiveIntegerField(default=0)
-    active_version = models.BooleanField(default=False)
-    poi = models.ForeignKey(to='POI', related_name='poi_translations')
-    pub_date = models.DateTimeField(auto_now_add=True)
+    minor_edit = models.BooleanField(default=False)
+    public = models.BooleanField(default=False)
+    created_date = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(User)
+    creator = models.ForeignKey(User)

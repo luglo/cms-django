@@ -47,7 +47,8 @@ class EventForm(forms.ModelForm):
     def save(self, commit=True, event_translation_id=None):
         # TODO: version, active_version
 
-        # Maybe move code for setting the values to this function... but not sure about behavior regarding call-by-object
+        # Maybe move code for setting the values to this function...
+        # but not sure about behavior regarding call-by-object
         # def set_data(self, event):
 
         if event_translation_id:
@@ -74,7 +75,7 @@ class EventForm(forms.ModelForm):
                 event.recurrence_rule.weekday_for_monthly = self.cleaned_data['weekday_for_monthly']
                 event.recurrence_rule.week_for_monthly = self.cleaned_data['week_for_monthly']
                 if self.cleaned_data['has_recurrence_end_date']:
-                    event.recurrence_rule.end_date = self.cleaned_date['recurrence_end_date']
+                    event.recurrence_rule.end_date = self.cleaned_data['recurrence_end_date']
             event.save()
 
             # save event translation

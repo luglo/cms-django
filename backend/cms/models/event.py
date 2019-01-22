@@ -7,9 +7,9 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
-from .site import Site
 from .language import Language
 from .poi import POI
+from .site import Site
 
 
 class RecurrenceRule(models.Model):
@@ -18,12 +18,59 @@ class RecurrenceRule(models.Model):
     MONTHLY = 'MONTHLY'
     YEARLY = 'YEARLY'
 
+    MONDAY = 0
+    TUESDAY = 1
+    WEDNESDAY = 2
+    THURSDAY = 3
+    FRIDAY = 4
+    SATURDAY = 5
+    SUNDAY = 6
+
+    JANUARY = 0
+    FEBRUARY = 1
+    MARCH = 2
+    APRIL = 3
+    MAY = 4
+    JUNE = 5
+    JULY = 6
+    AUGUST = 7
+    SEPTEMBER = 8
+    OCTOBER = 9
+    NOVEMBER = 10
+    DECEMBER = 11
+
     FREQUENCY = (
         (DAILY, 'Täglich'),
         (WEEKLY, 'Wöchentlich'),
         (MONTHLY, 'Monatlich'),
         (YEARLY, 'Jährlich')
     )
+
+    WEEKDAYS = (
+        (MONDAY, 'Montag'),
+        (TUESDAY, 'Dienstag'),
+        (WEDNESDAY, 'Mittwoch'),
+        (THURSDAY, 'Donnerstag'),
+        (FRIDAY, 'Freitag'),
+        (SATURDAY, 'Samstag'),
+        (SUNDAY, 'Sonntag')
+    )
+
+    MONTHS = (
+        (JANUARY, 'Januar'),
+        (FEBRUARY, 'Februar'),
+        (MARCH, 'März'),
+        (APRIL, 'April'),
+        (MAY, 'Mai'),
+        (JUNE, 'Juni'),
+        (JULY, 'Juli'),
+        (AUGUST, 'August'),
+        (SEPTEMBER, 'September'),
+        (OCTOBER, 'Oktober'),
+        (NOVEMBER, 'November'),
+        (DECEMBER, 'Dezember')
+    )
+
     frequency = models.CharField(max_length=7, choices=FREQUENCY)
     interval = models.IntegerField(default=1, validators=[MinValueValidator(1)])
     weekdays_for_weekly = ArrayField(

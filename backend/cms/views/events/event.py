@@ -1,3 +1,5 @@
+from datetime import time
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
@@ -19,12 +21,20 @@ class EventView(LoginRequiredMixin, TemplateView):
             form = EventForm(initial={
                 'picture': e.event.picture,
                 'start_date': e.event.start_date,
+                'start_time': e.event.start_time,
                 'end_date': e.event.end_date,
-                'is_all_day': e.event.is_all_day,
-                'is_recurring': e.event.is_recurring,
-                'has_recurring_end_date': e.event.has_recurring_end_date,
-                'recurring_end_date': e.event.recurring_end_date,
-                'frequency': e.event.frequency,
+                'end_time': e.event.end_time,
+                'frequency': e.event.recurrence_rule.frequency,
+                'interval': e.event.recurrence_rule.interval,
+                'weekdays_for_weekly': e.event.recurrence_rule.weekdays_for_weekly,
+                'weekday_for_monthly': e.event.recurrence_rule.weekday_for_monthly,
+                'week_for_monthly': e.event.recurrence_rule.week_for_monthly,
+                'recurrence_end_date': e.event.recurrence_rule.end_date,
+                'is_all_day': e.event.start_time == time(0, 0, 0, 0)
+                              and e.event.end_time == time(0, 0, 0, 0),
+                'is_recurring': e.event.recurrence_rule is not None,
+                'has_recurrence_end_date': e.event.recurrence_rule.end_date if (
+                        e.event.recurrence_rule is not None) else False,
                 'title': e.title,
                 'description': e.description,
                 'status': e.status,

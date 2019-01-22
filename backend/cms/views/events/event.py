@@ -13,10 +13,11 @@ class EventView(LoginRequiredMixin, TemplateView):
     base_context = {'current_menu_item': 'events'}
     model = Event
     template_name = 'events/event.html'
-    def get(self, request, event_translation_id=None):
-        if event_translation_id:
+
+    def get(self, request, *args, **kwargs):
+        if self.event_translation_id:
             e = EventTranslation.objects.filter(
-                id=event_translation_id).select_related('event').first()
+                id=self.event_translation_id).select_related('event').first()
             form = EventForm(initial={
                 'picture': e.event.picture,
                 'start_date': e.event.start_date,
@@ -32,7 +33,8 @@ class EventView(LoginRequiredMixin, TemplateView):
                 'is_all_day': e.event.start_time == time(0, 0, 0, 0)
                               and e.event.end_time == time(0, 0, 0, 0),
                 'is_recurring': e.event.recurrence_rule is not None,
-                'has_recurrence_end_date': e.event.recurrence_rule.end_date if e.event.recurrence_rule is not None else False,
+                'has_recurrence_end_date': e.event.recurrence_rule.end_date if (
+                    e.event.recurrence_rule is not None) else False,
                 'title': e.title,
                 'description': e.description,
                 'status': e.status,
@@ -51,9 +53,9 @@ class EventView(LoginRequiredMixin, TemplateView):
                 # TODO: handle status
 
                 if event_translation_id:
-                    form.save(event_translation_id=event_translation_id)
+                    form.save_event(event_translation_id=event_translation_id)
                 else:
-                    form.save()
+                    form.save_event()
 
                 messages.success(request, 'Event wurde erfolgreich erstellt.')
             else:

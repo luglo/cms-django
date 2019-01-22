@@ -10,8 +10,9 @@ class EventListView(LoginRequiredMixin, TemplateView):
     model = Event
     template_name = 'events/list_events.html'
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         events = Event.get_list_view()
         for event in events:
-            event['location'] = event['location'].filter(language='de').first()  # Use german version of location only
+            # Use german version of location only
+            event['location'] = event['location'].filter(language='de').first()
         return render(request, self.template_name, {**self.base_context, 'events': events})

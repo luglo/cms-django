@@ -44,22 +44,11 @@ class EventForm(forms.ModelForm):
                      ('fr', 'Französisch'),
                      ('tr', 'Türkisch')])
 
-    def save(self, commit=True, event_translation_id=None):
+    def save_event(self, event_translation_id=None):
         # TODO: version, active_version
 
-        # Maybe move code for setting the values to this function...
-        # but not sure about behavior regarding call-by-object
-        # def set_data(self, event):
-
-        if event_translation_id:
-            p = EventTranslation.objects.filter(
-                id=event_translation_id).select_related('event').first()
-
-            # save event
-            event = Event.objects.get(id=p.event.id)
-            event.picture = self.cleaned_data['picture']
-            event.start_date = self.cleaned_data['start_date']
-            event.location = self.cleaned_data['location']
+        # This method is highly experimental!
+        def set_data(self, event):
             if self.cleaned_data['is_all_day']:
                 event.start_time = time(0, 0, 0, 0)
                 event.end_date = event.start_date + timedelta(days=1)
@@ -76,6 +65,18 @@ class EventForm(forms.ModelForm):
                 event.recurrence_rule.week_for_monthly = self.cleaned_data['week_for_monthly']
                 if self.cleaned_data['has_recurrence_end_date']:
                     event.recurrence_rule.end_date = self.cleaned_data['recurrence_end_date']
+            return event
+
+        if event_translation_id:
+            p = EventTranslation.objects.filter(
+                id=event_translation_id).select_related('event').first()
+
+            # save event
+            event = Event.objects.get(id=p.event.id)
+            event.picture = self.cleaned_data['picture']
+            event.start_date = self.cleaned_data['start_date']
+            event.location = self.cleaned_data['location']
+            event = set_data(self, event)
             event.save()
 
             # save event translation
@@ -94,23 +95,8 @@ class EventForm(forms.ModelForm):
                 start_date=self.cleaned_data['start_date'],
                 location=self.cleaned_data['location']
             )
+            event = set_data(self, event)
 
-            if self.cleaned_data['is_all_day']:
-                event.start_time = time(0, 0, 0, 0)
-                event.end_date = event.start_date + timedelta(days=1)
-                event.end_time = time(0, 0, 0, 0)
-            else:
-                event.start_time = self.cleaned_data['start_time']
-                event.end_date = self.cleaned_data['end_date']
-                event.end_time = self.cleaned_data['end_time']
-            if self.cleaned_data['is_recurring']:
-                event.recurrence_rule.frequency = self.cleaned_data['frequency']
-                event.recurrence_rule.interval = self.cleaned_data['interval']
-                event.recurrence_rule.weekdays_for_weekly = self.cleaned_data['weekdays_for_weekly']
-                event.recurrence_rule.weekday_for_monthly = self.cleaned_data['weekday_for_monthly']
-                event.recurrence_rule.week_for_monthly = self.cleaned_data['week_for_monthly']
-                if self.cleaned_data['has_recurrence_end_date']:
-                    event.recurrence_rule.end_date = self.cleaned_date['recurrence_end_date']
             event.save()
 
             # create event translation

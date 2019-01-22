@@ -17,7 +17,7 @@ urlpatterns = [url(r'^$', general.DashboardView.as_view(), name='dashboard'),
                url(r'events/$', events.EventListView.as_view(), name='events'),
                url(r'events/new$', events.EventView.as_view(), name='new_event'),
                url(r'^events/(?P<event_translation_id>[0-9]+)$', events.EventView.as_view(),
-                   name='edit_event')
+                   name='edit_event'),
                url(r'events/(?P<event_translation_id>[0-9]+)/delete$',
                    events.EventView.as_view(),
                    name='delete_event'),

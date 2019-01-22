@@ -13,6 +13,7 @@ class EventView(LoginRequiredMixin, TemplateView):
     base_context = {'current_menu_item': 'events'}
     model = Event
     template_name = 'events/event.html'
+    event_translation_id = None
 
     def get(self, request, *args, **kwargs):
         if self.event_translation_id:

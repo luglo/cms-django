@@ -13,7 +13,6 @@ class EventView(LoginRequiredMixin, TemplateView):
     base_context = {'current_menu_item': 'events'}
     model = Event
     template_name = 'events/event.html'
-
     def get(self, request, event_translation_id=None):
         if event_translation_id:
             e = EventTranslation.objects.filter(
@@ -33,8 +32,7 @@ class EventView(LoginRequiredMixin, TemplateView):
                 'is_all_day': e.event.start_time == time(0, 0, 0, 0)
                               and e.event.end_time == time(0, 0, 0, 0),
                 'is_recurring': e.event.recurrence_rule is not None,
-                'has_recurrence_end_date': e.event.recurrence_rule.end_date if (
-                        e.event.recurrence_rule is not None) else False,
+                'has_recurrence_end_date': e.event.recurrence_rule.end_date if e.event.recurrence_rule is not None else False,
                 'title': e.title,
                 'description': e.description,
                 'status': e.status,

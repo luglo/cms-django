@@ -34,48 +34,35 @@
                     <div class="w-full md:w-1/2 md:pr-2">
                         <div class="w-full p-4 mt-2 rounded border border-solid border-grey-light shadow bg-white">
                             <h3 class="font-bold mb-3">Wann</h3>
-                            <div class="checkbox-wrap relative mt-2 mb-4 pl-5"
-                                 style="padding-top:2px;padding-bottom:15px;">
-                                <span class="leading-tight block absolute" style="top:0;left:0;">
-                                    {% render_field form.is_recurring %} {{ form.is_recurring.label }}
-                                </span>
-                            </div>
-                            <!-- TODO: hier fortsetzen-->
                             <label class="mb-2 block font-bold uppercase text-sm">Datum</label>
                             <div class="flex flex-wrap">
                                 <div class="w-1/2 pr-2">
-                                    <input class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey"
-                                           type="text" placeholder="Startdatum">
+                                    {% render_field form.start_date placeholder=form.start_date.label class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
                                 </div>
                                 <div class="w-1/2 pr-2">
-                                    <input class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey"
-                                           type="text" placeholder="Enddatum">
+                                   {% render_field form.end_date placeholder=form.end_date.label class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
                                 </div>
                             </div>
                             <label class="mt-4 mb-2 block font-bold uppercase text-sm">Uhrzeit</label>
                             <div class="flex flex-wrap mb-3">
                                 <div class="w-1/2 pr-2">
-                                    <input class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey"
-                                           type="text" placeholder="Start">
+                                    {% render_field form.start_time placeholder=form.start_time.label class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
                                 </div>
                                 <div class="w-1/2 pr-2">
-                                    <input class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey"
-                                           type="text" placeholder="Ende">
+                                    {% render_field form.end_time placeholder=form.end_time.label class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
                                 </div>
                             </div>
-                            <div class="checkbox-wrap relative mt-2 pl-5" style="padding-top:2px;padding-bottom:2px;">
-                                <input class="leading-tight block absolute" style="top:5px;left:0;" type="checkbox"
-                                       id="whole-day">
-                                <label for="whole-day">
-                                    Ganztätige Veranstaltung
-                                </label>
+                            <!-- TODO: Don't show or deactivate time fields if is_all_day is true -->
+                            <div class="checkbox-wrap relative mt-2 pl-5" style="padding-top:2px;padding-bottom:2px;padding-left:0;">
+                                {% render_field form.is_all_day %} {{ form.is_all_day.label }}
                             </div>
-                            <div class="checkbox-wrap relative mt-2 pl-5" style="padding-top:2px;padding-bottom:2px;">
-                                <input class="leading-tight block absolute" style="top:5px;left:0;" type="checkbox"
-                                       id="ignore-end">
-                                <label for="ignore-end">
-                                    Das zeitliche Ende soll ignoriert werden
-                                </label>
+                            <label class="mt-4 mb-2 block font-bold uppercase text-sm">Wiederholung</label>
+                            <div class="checkbox-wrap relative mt-2 pl-5" style="padding-top:2px;padding-bottom:2px;padding-left: 0">
+                                    {% render_field form.is_recurring %} {{ form.is_recurring.label }}
+                            </div>
+                            <!-- TODO: Add fields for recurrence options, make options dynamic -->
+                            <div class="checkbox-wrap relative mt-2 pl-5" style="padding-top:2px;padding-bottom:2px;padding-left:0;">
+                                {% render_field form.has_recurrence_end_date %} {{ form.has_recurrence_end_date.label }}
                             </div>
                         </div>
                     </div>

@@ -2,6 +2,7 @@ from datetime import time, timedelta
 
 from django import forms
 
+from cms.models import Language
 from cms.models.event import EventTranslation, Event, RecurrenceRule
 
 
@@ -11,7 +12,7 @@ class EventForm(forms.ModelForm):
     start_date = forms.DateField(input_formats=['%d.%m.%Y'], label='Beginn (Datum)')
     start_time = forms.TimeField(input_formats=['%H:%M'], label='Beginn (Uhrzeit)')
     end_date = forms.DateField(input_formats=['%d.%m.%Y'], label='Ende (Datum)')
-    end_time = forms.TimeField(input_formats=['%H:%M'], label='Ende (Uhrzeit')
+    end_time = forms.TimeField(input_formats=['%H:%M'], label='Ende (Uhrzeit)')
     frequency = forms.ChoiceField(choices=RecurrenceRule.FREQUENCY, label='Häufigkeit')
     interval = forms.IntegerField(min_value=1)
     weekdays_for_weekly = forms.MultipleChoiceField(choices=RecurrenceRule.WEEKDAYS,
@@ -20,14 +21,16 @@ class EventForm(forms.ModelForm):
     week_for_monthly = forms.ChoiceField(
         choices=[(1, '1.'), (2, '2.'), (3, '3.'), (4, '4.'), (5, '5.')])
     recurrence_end_date = forms.DateField(input_formats=['%d.%m.%Y'], label='Wiederholungsenddatum')
-    is_all_day = forms.BooleanField(label='Ganztägiges Event')
-    is_recurring = forms.BooleanField(label='Wiederkehrendes Event')
-    has_recurrence_end_date = forms.BooleanField(label='Wiederholung hat Enddatum')
+    is_all_day = forms.BooleanField(label='Ganztägiges Event', required=False)
+    is_recurring = forms.BooleanField(label='Wiederkehrendes Event', required=False)
+    has_recurrence_end_date = forms.BooleanField(label='Wiederholung hat Enddatum', required=False)
 
     # Event translation related fields
     status = forms.ChoiceField(choices=EventTranslation.STATUS)
     minor_edit = forms.BooleanField()
     public = forms.BooleanField()
+
+    # Event location related fields
 
     class Meta:
         model = EventTranslation
@@ -104,7 +107,7 @@ class EventForm(forms.ModelForm):
                 title=self.cleaned_data['title'],
                 description=self.cleaned_data['description'],
                 status=self.cleaned_data['status'],
-                language=self.cleaned_data['language'],
+                language=Language.objects.filter(code=self.cleaned_data['language']),
                 minor_edit=self.cleaned_data['minor_edit'],
                 public=self.cleaned_data['public'],
                 event=event,

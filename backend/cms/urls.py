@@ -18,9 +18,10 @@ urlpatterns = [
                   url(r'events/$', events.EventListView.as_view(), name='events'),
                   url(r'events/new$', events.EventView.as_view(), name='new_event'),
                   url(r'^events/(?P<event_translation_id>[0-9]+)$', events.EventView.as_view(),
-                      name='edit_event'),
+                      name='edit_event')
                   url(r'events/(?P<event_translation_id>[0-9]+)/delete$',
-                      events.EventView.as_view(), name='delete_event'),
+                      events.EventView.as_view(),
+                      name='delete_event'),
                   url(r'^login/$', registration.login, name='login'),
                   url(r'^logout/$', registration.logout, name='logout'),
                   url(r'^password_reset/$', auth_views.PasswordResetView.as_view(),
@@ -29,8 +30,8 @@ urlpatterns = [
                       name='password_reset_done'),
                   url(r'^password_reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',
                       auth_views.PasswordResetConfirmView.as_view(
-                          form_class=registration.forms.PasswordResetConfirmForm
-                      ), name='password_reset_confirm'),
+                          form_class=registration.forms.PasswordResetConfirmForm),
+                      name='password_reset_confirm'),
                   url(r'^password_reset/complete/$', registration.password_reset_complete,
                       name='password_reset_complete'),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

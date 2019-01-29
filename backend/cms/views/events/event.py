@@ -39,7 +39,7 @@ class EventView(LoginRequiredMixin, TemplateView):
                 'title': e.title,
                 'description': e.description,
                 'status': e.status,
-                'language': e.language,
+                'language': e.language.code,
             })
         else:
             form = EventForm()

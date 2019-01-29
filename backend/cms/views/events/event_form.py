@@ -87,7 +87,7 @@ class EventForm(forms.ModelForm):
             event_translation.title = self.cleaned_data['title']
             event_translation.description = self.cleaned_data['description']
             event_translation.status = self.cleaned_data['status']
-            event_translation.language = self.cleaned_data['language']
+            event_translation.language = Language.objects.filter(code=self.cleaned_data['language'])
             event_translation.minor_edit = self.cleaned_data['minor_edit']
             event_translation.public = self.cleaned_data['public']
             event_translation.save()

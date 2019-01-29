@@ -37,7 +37,7 @@ class EventForm(forms.ModelForm):
 
     class Meta:
         model = EventTranslation
-        fields = ['title', 'description', 'status']
+        fields = ['title', 'description']
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)

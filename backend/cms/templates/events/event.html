@@ -22,12 +22,12 @@
 
         <div class="flex flex-wrap">
             <div class="w-2/3 pr-2">
-                {{ form.errors }}
+                {{ event_form.errors }}
                 <div class="w-full p-4 mb-4 rounded border border-solid border-grey-light shadow bg-white">
-                    {% render_field form.title placeholder="Titel hier eingeben" class="appearance-none block w-full bg-grey-lighter text-xl text-grey-darkest border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
+                    {% render_field event_form.title placeholder="Titel hier eingeben" class="appearance-none block w-full bg-grey-lighter text-xl text-grey-darkest border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
                     <div class="mt-4">
-                        <!--{% render_field form.text placeholder="Text" class="tinymce_textarea" %}-->
-                        {% render_field form.description placeholder="Beschreibung" class="bg-grey-lighter w-full p-2" %}
+                        <!--{% render_field event_form.text placeholder="Text" class="tinymce_textarea" %}-->
+                        {% render_field event_form.description placeholder="Beschreibung" class="bg-grey-lighter w-full p-2" %}
                     </div>
                 </div>
                 <div class="flex flex-wrap mt-3">
@@ -37,32 +37,32 @@
                             <label class="mb-2 block font-bold uppercase text-sm">Datum</label>
                             <div class="flex flex-wrap">
                                 <div class="w-1/2 pr-2">
-                                    {% render_field form.start_date placeholder=form.start_date.label class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
+                                    {% render_field event_form.start_date placeholder=event_form.start_date.label class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
                                 </div>
                                 <div class="w-1/2 pr-2">
-                                   {% render_field form.end_date placeholder=form.end_date.label class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
+                                   {% render_field event_form.end_date placeholder=event_form.end_date.label class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
                                 </div>
                             </div>
                             <label class="mt-4 mb-2 block font-bold uppercase text-sm">Uhrzeit</label>
                             <div class="flex flex-wrap mb-3">
                                 <div class="w-1/2 pr-2">
-                                    {% render_field form.start_time placeholder=form.start_time.label class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
+                                    {% render_field event_form.start_time placeholder=event_form.start_time.label class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
                                 </div>
                                 <div class="w-1/2 pr-2">
-                                    {% render_field form.end_time placeholder=form.end_time.label class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
+                                    {% render_field event_form.end_time placeholder=event_form.end_time.label class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
                                 </div>
                             </div>
                             <!-- TODO: Don't show or deactivate time fields if is_all_day is true -->
                             <div class="checkbox-wrap relative mt-2 pl-5" style="padding-top:2px;padding-bottom:2px;padding-left:0;">
-                                {% render_field form.is_all_day %} {{ form.is_all_day.label }}
+                                {% render_field event_form.is_all_day %} {{ event_form.is_all_day.label }}
                             </div>
                             <label class="mt-4 mb-2 block font-bold uppercase text-sm">Wiederholung</label>
                             <div class="checkbox-wrap relative mt-2 pl-5" style="padding-top:2px;padding-bottom:2px;padding-left: 0">
-                                    {% render_field form.is_recurring %} {{ form.is_recurring.label }}
+                                    {% render_field event_form.is_recurring %} {{ event_form.is_recurring.label }}
                             </div>
                             <!-- TODO: Add fields for recurrence options, make options dynamic -->
                             <div class="checkbox-wrap relative mt-2 pl-5" style="padding-top:2px;padding-bottom:2px;padding-left:0;">
-                                {% render_field form.has_recurrence_end_date %} {{ form.has_recurrence_end_date.label }}
+                                {% render_field event_form.has_recurrence_end_date %} {{ event_form.has_recurrence_end_date.label }}
                             </div>
                         </div>
                     </div>
@@ -111,7 +111,7 @@
                         <span class="block mb-2 font-bold">Sprache</span>
                         <label class="text-xs uppercase block">Aktuelle Sprache</label>
                         <div class="relative my-2">
-                            {% render_field form.language id="parent" class="block appearance-none w-full bg-grey-lighter border border-grey-lighter text-grey-darkest py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
+                            {% render_field event_form.language id="parent" class="block appearance-none w-full bg-grey-lighter border border-grey-lighter text-grey-darkest py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
                             <div class="pointer-events-none absolute pin-y pin-r flex items-center px-2 text-grey-darkest">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                                      viewBox="0 0 20 20">
@@ -189,7 +189,7 @@
                     <div class="py-2 border-b solid border-grey-lighter mb-2">
                         <label for="status" class="font-bold">Status</label>
                         <div class="relative my-2">
-                            {% render_field form.status id="status" class="block appearance-none w-full bg-grey-lighter border border-grey-lighter text-grey-darkest py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
+                            {% render_field event_form.status id="status" class="block appearance-none w-full bg-grey-lighter border border-grey-lighter text-grey-darkest py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
                             <div class="pointer-events-none absolute pin-y pin-r flex items-center px-2 text-grey-darkest">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                                      viewBox="0 0 20 20">
@@ -200,7 +200,7 @@
                     </div>
                     <div class="pt-2 pb-4">
                         <span class="block font-bold mb-4">Beitragsbild</span>
-                        {% render_field form.picture id="picture" class="image-field" %}
+                        {% render_field event_form.picture id="picture" class="image-field" %}
                         <label for="icon"
                                class="font-bold my-2 bg-blue hover:bg-blue-dark focus:bg-blue-dark text-white font-bold py-2 pl-10 pr-4 rounded cursor-pointer relative">
                             <i data-feather="upload"></i>

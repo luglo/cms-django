@@ -19,7 +19,7 @@ class EventView(LoginRequiredMixin, TemplateView):
         if self.event_translation_id:
             e = EventTranslation.objects.filter(
                 id=self.event_translation_id).select_related('event').first()
-            form = EventForm(initial={
+            event_form = EventForm(initial={
                 'picture': e.event.picture,
                 'start_date': e.event.start_date,
                 'start_time': e.event.start_time,
@@ -42,21 +42,22 @@ class EventView(LoginRequiredMixin, TemplateView):
                 'language': e.language.code,
             })
         else:
-            form = EventForm()
+            event_form = EventForm()
         return render(request, self.template_name, {
-            'form': form, **self.base_context})
+            'event_form': event_form, **self.base_context})
 
     def post(self, request, event_translation_id=None):
         # TODO: error handling
-        form = EventForm(request.POST, user=request.user)
-        if form.is_valid():
-            if form.data['submit_publish']:
+        event_form = EventForm(request.POST, user=request.user)
+        if event_form.is_valid():
+            # TODO: set status according to 'save' or 'publish'
+            if request.POST.get('submit_publish', False) or request.POST.get('submit_save', False):
                 # TODO: handle status
 
                 if event_translation_id:
-                    form.save_event(event_translation_id=event_translation_id)
+                    event_form.save_event(event_translation_id=event_translation_id)
                 else:
-                    form.save_event()
+                    event_form.save_event()
 
                 messages.success(request, 'Event wurde erfolgreich erstellt.')
             else:
@@ -66,4 +67,4 @@ class EventView(LoginRequiredMixin, TemplateView):
             messages.error(request, 'Es sind Fehler aufgetreten.')
 
         return render(request, self.template_name, {
-            'form': form, **self.base_context})
+            'event_form': event_form, **self.base_context})

@@ -13,28 +13,31 @@ class EventForm(forms.ModelForm):
     start_time = forms.TimeField(input_formats=['%H:%M'], label='Beginn (Uhrzeit)')
     end_date = forms.DateField(input_formats=['%d.%m.%Y'], label='Ende (Datum)')
     end_time = forms.TimeField(input_formats=['%H:%M'], label='Ende (Uhrzeit)')
-    frequency = forms.ChoiceField(choices=RecurrenceRule.FREQUENCY, label='Häufigkeit')
-    interval = forms.IntegerField(min_value=1)
+    frequency = forms.ChoiceField(choices=RecurrenceRule.FREQUENCY, label='Häufigkeit',
+                                  required=False)
+    interval = forms.IntegerField(min_value=1, required=False)
     weekdays_for_weekly = forms.MultipleChoiceField(choices=RecurrenceRule.WEEKDAYS,
-                                                    widget=forms.CheckboxSelectMultiple)
-    weekday_for_monthly = forms.ChoiceField(choices=RecurrenceRule.WEEKDAYS)
+                                                    widget=forms.CheckboxSelectMultiple,
+                                                    required=False)
+    weekday_for_monthly = forms.ChoiceField(choices=RecurrenceRule.WEEKDAYS, required=False)
     week_for_monthly = forms.ChoiceField(
-        choices=[(1, '1.'), (2, '2.'), (3, '3.'), (4, '4.'), (5, '5.')])
-    recurrence_end_date = forms.DateField(input_formats=['%d.%m.%Y'], label='Wiederholungsenddatum')
+        choices=[(1, '1.'), (2, '2.'), (3, '3.'), (4, '4.'), (5, '5.')], required=False)
+    recurrence_end_date = forms.DateField(input_formats=['%d.%m.%Y'], label='Wiederholungsenddatum',
+                                          required=False)
     is_all_day = forms.BooleanField(label='Ganztägiges Event', required=False)
     is_recurring = forms.BooleanField(label='Wiederkehrendes Event', required=False)
     has_recurrence_end_date = forms.BooleanField(label='Wiederholung hat Enddatum', required=False)
 
     # Event translation related fields
     status = forms.ChoiceField(choices=EventTranslation.STATUS)
-    minor_edit = forms.BooleanField()
-    public = forms.BooleanField()
+    minor_edit = forms.BooleanField(required=False)
+    public = forms.BooleanField(required=False)
 
     # Event location related fields
 
     class Meta:
         model = EventTranslation
-        fields = ['title', 'description', 'status', 'language']
+        fields = ['title', 'description', 'status']
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -87,7 +90,8 @@ class EventForm(forms.ModelForm):
             event_translation.title = self.cleaned_data['title']
             event_translation.description = self.cleaned_data['description']
             event_translation.status = self.cleaned_data['status']
-            event_translation.language = Language.objects.filter(code=self.cleaned_data['language'])
+            event_translation.language = Language.objects.filter(
+                code=self.cleaned_data['language']).first()
             event_translation.minor_edit = self.cleaned_data['minor_edit']
             event_translation.public = self.cleaned_data['public']
             event_translation.save()
@@ -107,7 +111,7 @@ class EventForm(forms.ModelForm):
                 title=self.cleaned_data['title'],
                 description=self.cleaned_data['description'],
                 status=self.cleaned_data['status'],
-                language=Language.objects.filter(code=self.cleaned_data['language']),
+                language=Language.objects.filter(code=self.cleaned_data['language']).first(),
                 minor_edit=self.cleaned_data['minor_edit'],
                 public=self.cleaned_data['public'],
                 event=event,

@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-from .site import Site
 from .language import Language
+from .site import Site
 
 
 class POI(models.Model):
@@ -12,8 +12,8 @@ class POI(models.Model):
     city = models.CharField(max_length=250)
     region = models.CharField(max_length=250)
     country = models.CharField(max_length=250)
-    latitude = models.FloatField()
-    longitude = models.FloatField()
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
 
     @classmethod
     def get_list_view(cls):
@@ -37,7 +37,7 @@ class POITranslation(models.Model):
         ('reviewed', 'Review abgeschlossen'),
     )
     status = models.CharField(max_length=9, choices=STATUS, default='draft')
-    description = models.TextField()
+    description = models.TextField(blank=True)
     language = models.ForeignKey(Language)
     version = models.PositiveIntegerField(default=0)
     minor_edit = models.BooleanField(default=False)

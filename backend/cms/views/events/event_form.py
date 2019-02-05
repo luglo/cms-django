@@ -1,4 +1,4 @@
-from datetime import time, timedelta
+from datetime import time
 
 from django import forms
 
@@ -53,71 +53,47 @@ class EventForm(forms.ModelForm):
     def save_event(self, event_translation_id=None):
         # TODO: version, active_version
 
-        # This method is highly experimental!
-        # At the moment it seems to work, bit I'm not sure about how Python handles the objects
-        def set_data(self, event):
-            if self.cleaned_data['is_all_day']:
-                event.start_time = time(0, 0, 0, 0)
-                event.end_date = event.start_date + timedelta(days=1)
-                event.end_time = time(0, 0, 0, 0)
-            else:
-                event.start_time = self.cleaned_data['start_time']
-                event.end_date = self.cleaned_data['end_date']
-                event.end_time = self.cleaned_data['end_time']
-            if self.cleaned_data['is_recurring']:
-                if not event.recurrence_rule:
-                    event.recurrence_rule = RecurrenceRule()
-                event.recurrence_rule.frequency = self.cleaned_data['frequency']
-                event.recurrence_rule.interval = self.cleaned_data['interval']
-                event.recurrence_rule.weekdays_for_weekly = self.cleaned_data['weekdays_for_weekly']
-                event.recurrence_rule.weekday_for_monthly = self.cleaned_data['weekday_for_monthly']
-                event.recurrence_rule.week_for_monthly = self.cleaned_data['week_for_monthly']
-                if self.cleaned_data['has_recurrence_end_date']:
-                    event.recurrence_rule.end_date = self.cleaned_data['recurrence_end_date']
-                event.recurrence_rule.save()
-            return event
-
         if event_translation_id:
             p = EventTranslation.objects.filter(
                 id=event_translation_id).select_related('event').first()
-
-            # save event
             event = Event.objects.get(id=p.event.id)
-            event.picture = self.cleaned_data['picture']
-            event.start_date = self.cleaned_data['start_date']
-            event.location = self.cleaned_data['location']
-            event = set_data(self, event)
-            event.save()
-
-            # save event translation
             event_translation = EventTranslation.objects.get(id=p.id)
-            event_translation.title = self.cleaned_data['title']
-            event_translation.description = self.cleaned_data['description']
-            event_translation.status = self.cleaned_data['status']
-            event_translation.language = Language.objects.filter(
-                code=self.cleaned_data['language']).first()
-            event_translation.minor_edit = self.cleaned_data['minor_edit']
-            event_translation.public = self.cleaned_data['public']
-            event_translation.save()
         else:
-            # create event
-            event = Event.objects.create(
-                picture=self.cleaned_data['picture'],
-                start_date=self.cleaned_data['start_date'],
-                location=self.cleaned_data['location']
-            )
-            event = set_data(self, event)
+            event = Event()
+            event_translation = EventTranslation()
+            event_translation.creator = self.user
+            event_translation.event = event
 
-            event.save()
+        # save event
+        event.picture = self.cleaned_data['picture']
+        event.start_date = self.cleaned_data['start_date']
+        event.end_date = self.cleaned_data['end_date']
+        event.location = self.cleaned_data['location']
+        if self.cleaned_data['is_all_day']:
+            event.start_time = time(0, 0, 0, 0)
+            event.end_time = time(0, 0, 0, 0)
+        else:
+            event.start_time = self.cleaned_data['start_time']
+            event.end_time = self.cleaned_data['end_time']
+        if self.cleaned_data['is_recurring']:
+            if not event.recurrence_rule:
+                event.recurrence_rule = RecurrenceRule()
+            event.recurrence_rule.frequency = self.cleaned_data['frequency']
+            event.recurrence_rule.interval = self.cleaned_data['interval']
+            event.recurrence_rule.weekdays_for_weekly = self.cleaned_data['weekdays_for_weekly']
+            event.recurrence_rule.weekday_for_monthly = self.cleaned_data['weekday_for_monthly']
+            event.recurrence_rule.week_for_monthly = self.cleaned_data['week_for_monthly']
+            if self.cleaned_data['has_recurrence_end_date']:
+                event.recurrence_rule.end_date = self.cleaned_data['recurrence_end_date']
+            event.recurrence_rule.save()
+        event.save()
 
-            # create event translation
-            event_translation = EventTranslation.objects.create(
-                title=self.cleaned_data['title'],
-                description=self.cleaned_data['description'],
-                status=self.cleaned_data['status'],
-                language=Language.objects.filter(code=self.cleaned_data['language']).first(),
-                minor_edit=self.cleaned_data['minor_edit'],
-                public=self.cleaned_data['public'],
-                event=event,
-                creator=self.user
-            )
+        # save event translation
+        event_translation.title = self.cleaned_data['title']
+        event_translation.description = self.cleaned_data['description']
+        event_translation.status = self.cleaned_data['status']
+        event_translation.language = Language.objects.filter(
+            code=self.cleaned_data['language']).first()
+        event_translation.minor_edit = self.cleaned_data['minor_edit']
+        event_translation.public = self.cleaned_data['public']
+        event_translation.save()

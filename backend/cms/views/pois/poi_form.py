@@ -40,43 +40,30 @@ class POIForm(forms.ModelForm):
         if poi_translation_id:
             p = POITranslation.objects.filter(
                 id=poi_translation_id).select_related('poi').first()
-
-            # save POI
             poi = POI.objects.get(id=p.poi.id)
-            poi.address = self.cleaned_data['address']
-            poi.postcode = self.cleaned_data['postcode']
-            poi.city = self.cleaned_data['city']
-            poi.region = self.cleaned_data['region']
-            poi.country = self.cleaned_data['country']
-            poi.latitude = self.cleaned_data['latitude']
-            poi.latitude = self.cleaned_data['longitude']
-            poi.save()
-
-            # save poi translation
             poi_translation = POITranslation.objects.get(id=p.id)
-            poi_translation.title = self.cleaned_data['title']
-            poi_translation.description = self.cleaned_data['description']
-            poi_translation.status = self.cleaned_data['status']
-            poi_translation.language = Language.objects.filter(
-                code=self.cleaned_data['language']).first()
-            poi_translation.minor_edit = self.cleaned_data['minor_edit']
-            poi_translation.public = self.cleaned_data['public']
-            poi_translation.save()
         else:
+            poi = POI()
+            poi_translation = POITranslation()
+            poi_translation.poi = poi
+            poi_translation.creator = self.user
 
-            #TODO: hier fortsetzen
-            # create POI
-            poi = POI.objects.create(
-            )
+        # save POI
+        poi.address = self.cleaned_data['address']
+        poi.postcode = self.cleaned_data['postcode']
+        poi.city = self.cleaned_data['city']
+        poi.region = self.cleaned_data['region']
+        poi.country = self.cleaned_data['country']
+        poi.latitude = self.cleaned_data['latitude']
+        poi.longitude = self.cleaned_data['longitude']
+        poi.save()
 
-            # create poi translation
-            poi_translation = POITranslation.objects.create(
-                title=self.cleaned_data['title'],
-                description=self.cleaned_data['description'],
-                status=self.cleaned_data['status'],
-                language=Language.objects.filter(code=self.cleaned_data['language']).first(),
-                minor_edit=self.cleaned_data['minor_edit'],
-                public=self.cleaned_data['public'],
-                poi=poi,
-                creator=self.user
-            )
+        # save poi translation
+        poi_translation.title = self.cleaned_data['title']
+        poi_translation.description = self.cleaned_data['description']
+        poi_translation.status = self.cleaned_data['status']
+        poi_translation.language = Language.objects.filter(
+            code=self.cleaned_data['language']).first()
+        poi_translation.minor_edit = self.cleaned_data['minor_edit']
+        poi_translation.public = self.cleaned_data['public']
+        poi_translation.save()

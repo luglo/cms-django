@@ -54,6 +54,7 @@ class EventForm(forms.ModelForm):
         # TODO: version, active_version
 
         # This method is highly experimental!
+        # At the moment it seems to work, bit I'm not sure about how Python handles the objects
         def set_data(self, event):
             if self.cleaned_data['is_all_day']:
                 event.start_time = time(0, 0, 0, 0)
@@ -64,6 +65,8 @@ class EventForm(forms.ModelForm):
                 event.end_date = self.cleaned_data['end_date']
                 event.end_time = self.cleaned_data['end_time']
             if self.cleaned_data['is_recurring']:
+                if not event.recurrence_rule:
+                    event.recurrence_rule = RecurrenceRule()
                 event.recurrence_rule.frequency = self.cleaned_data['frequency']
                 event.recurrence_rule.interval = self.cleaned_data['interval']
                 event.recurrence_rule.weekdays_for_weekly = self.cleaned_data['weekdays_for_weekly']
@@ -71,6 +74,7 @@ class EventForm(forms.ModelForm):
                 event.recurrence_rule.week_for_monthly = self.cleaned_data['week_for_monthly']
                 if self.cleaned_data['has_recurrence_end_date']:
                     event.recurrence_rule.end_date = self.cleaned_data['recurrence_end_date']
+                event.recurrence_rule.save()
             return event
 
         if event_translation_id:

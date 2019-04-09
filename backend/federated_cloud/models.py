@@ -1,10 +1,12 @@
 from django.db import models
 
+
 class CMSCache(models.Model):
     id = models.CharField(max_length=20)
     name = models.CharField(max_length=50)
     domain = models.CharField(max_length=50)
     public_key = models.CharField(max_length=32)
+
 
 class RegionCache(models.Model):
     parentCMS = models.ForeignKey(CMSCache, primary_key=True)

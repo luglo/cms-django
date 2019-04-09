@@ -2,14 +2,14 @@ from django.db import models
 
 
 class CMSCache(models.Model):
-    id = models.CharField(max_length=20)
+    id = models.CharField(max_length=20, primary_key=True)
     name = models.CharField(max_length=50)
     domain = models.CharField(max_length=50)
     public_key = models.CharField(max_length=32)
 
 
 class RegionCache(models.Model):
-    parentCMS = models.ForeignKey(CMSCache, primary_key=True)
+    parentCMS = models.ForeignKey(CMSCache)
     path = models.CharField(max_length=60)
     postal_code = models.CharField(max_length=10)
     prefix = models.CharField(max_length=100)
@@ -18,5 +18,8 @@ class RegionCache(models.Model):
     latitude = models.FloatField(null=True)
     longitude = models.FloatField(null=True)
 
+    class Meta:
+        unique_together = (("parentCMS", "path"),)
 
-# TODO: Discuss max_length of CharField's
+
+# TODO Discuss: max_length of CharField's (use TextFields?), unique_together instead of composite primary key

@@ -6,7 +6,7 @@ urlpatterns = [
     url(r'^', include('cms.urls')),
     url(r'^api/', include('api.urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'^federated-cloud/', include('federated-cloud.urls')),
+    url(r'^federated-cloud/', include('federated_cloud.urls')),
 ]
 
 handler400 = 'cms.views.general.handler400'

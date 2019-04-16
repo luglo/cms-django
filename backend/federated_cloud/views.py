@@ -1,5 +1,4 @@
 from django.http import HttpResponse
-import requests
 
 from federated_cloud.models import CMSCache
 
@@ -13,9 +12,13 @@ def getCMSIds(request):
 
 
 def getCMSes(request):
-    return HttpResponse("Dies ist eine Antwort, die ein paar CMSes enthält.")
+    a = CMSCache.objects.filter(shareWithOthers=True)
+    return HttpResponse("Dies ist eine Antwort, die ein paar CMSes enthält." + type(a))
 
 
 def getSite(request):
-    r=requests.get("http://localhost:8000/federated-cloud/getCMSes/")
-    return HttpResponse("Dies ist eine Antwort, die ein paar Sites enthält. " + str(r.text))
+    # aksForCMS, useSites, shareWithOthers
+    CMSCache(id = "1234567", name = "Andorraqw", domain = "www.andorra.com", public_key = "qwer").save()
+
+    a = CMSCache.objects.all()
+    return HttpResponse("Dies ist eine Antwort, die ein paar Sites enthält. " + str(len(a)) + " "+ a[0].id + " " +a[1].id + " " + a[2].id + " " + a[2].name)

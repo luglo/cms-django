@@ -1,24 +1,32 @@
+import json
+
 from django.http import HttpResponse
 
+from cms.models import Site
 from federated_cloud.models import CMSCache
 
 
-def getCMSIds(request):
-    responseList = list(map(lambda cmsCacheEntry: cmsCacheEntry.id, CMSCache.objects.filter(shareWithOthers=True)))
-    response = "-".join(responseList)
+def cmsIds(request):
+    responseList = [cmsCacheEntry.id for cmsCacheEntry in CMSCache.objects.filter(shareWithOthers=True)]
+    response = json.dumps(responseList)
     return HttpResponse(response)
 
 
+def cmsData(request, cmsId):
+    responseCMS = CMSCache.objects.get(id=cmsId)
+    responseDict = {"name": responseCMS.name, "domain": responseCMS.domain, "public_key": responseCMS.public_key}
+    return HttpResponse(json.dumps(responseDict))
 
 
-def getCMSes(request):
-    a = CMSCache.objects.filter(shareWithOthers=True)
-    return HttpResponse("Dies ist eine Antwort, die ein paar CMSes enthält." + type(a))
-
-
-def getSite(request):
-    # aksForCMS, useSites, shareWithOthers
-    CMSCache(id = "1234567", name = "Andorraqw", domain = "www.andorra.com", public_key = "qwer").save()
-
-    a = CMSCache.objects.all()
-    return HttpResponse("Dies ist eine Antwort, die ein paar Sites enthält. " + str(len(a)) + " "+ a[0].id + " " +a[1].id + " " + a[2].id + " " + a[2].name)
+def dataOfSites(request):
+    sites = Site.objects.all()
+    responseList = [{
+        "path": "",
+        "aliases": "",
+        "latitude": site.latitude,
+        "longitude": site.longitude,
+        "postal_code": site.postal_code,
+        "prefix": "",
+        "name_without_prefix": "",
+    } for site in sites]
+    return HttpResponse(json.dumps(responseList))

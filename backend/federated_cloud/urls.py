@@ -1,9 +1,9 @@
-from django.conf.urls import  url
+from django.conf.urls import url
 
 from . import views
 
 urlpatterns = [
-    # ex: /polls/
-    url(r'^getCMSes/', views.getCMSes),
-    url(r'^getSite/', views.getSite),
+    url(r'^cmsIds/', views.cmsIds),
+    url(r'^cmsData/(?P<cmsId>[0-9,a-f]+)/$', views.cmsData),
+    url(r'^dataOfSites/', views.dataOfSites),
 ]

@@ -21,12 +21,14 @@ def cmsData(request, cmsId):
 def dataOfSites(request):
     sites = Site.objects.all()
     responseList = [{
-        "path": "",
+        "path": site.name,
         "aliases": "",
         "latitude": site.latitude,
         "longitude": site.longitude,
         "postal_code": site.postal_code,
         "prefix": "",
-        "name_without_prefix": "",
+        "name_without_prefix": site.title,
     } for site in sites]
     return HttpResponse(json.dumps(responseList))
+
+    #todo: prefix, name_without_prefix and aliases

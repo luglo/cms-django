@@ -11,7 +11,7 @@ class CMSCache(models.Model):
     shareWithOthers = models.BooleanField()
 
 
-class RegionCache(models.Model):
+class SiteCache(models.Model):
     parentCMS = models.ForeignKey(CMSCache)
     path = models.CharField(max_length=60)
     postal_code = models.CharField(max_length=10)

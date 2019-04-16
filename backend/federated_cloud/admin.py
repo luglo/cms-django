@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from federated_cloud.models import CMSCache
+
+admin.site.register(CMSCache)

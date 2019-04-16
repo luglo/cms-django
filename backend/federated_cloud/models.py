@@ -25,4 +25,5 @@ class SiteCache(models.Model):
         unique_together = (("parentCMS", "path"),)
 
 
-# TODO Discuss: max_length of CharField's (use TextFields?), unique_together instead of composite primary key
+# TODO Discuss: max_length of CharField's (use TextFields?),
+# TODO Discuss: unique_together instead of composite primary key

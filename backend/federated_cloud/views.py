@@ -1,21 +1,24 @@
-import json
-
-from django.http import HttpResponse
+from django.http import JsonResponse
 
 from cms.models import Site
 from federated_cloud.models import CMSCache
 
 
 def cmsIds(request):
-    responseList = [cmsCacheEntry.id for cmsCacheEntry in CMSCache.objects.filter(shareWithOthers=True)]
-    response = json.dumps(responseList)
-    return HttpResponse(response)
+    responseList = [
+        cmsCacheEntry.id for cmsCacheEntry in CMSCache.objects.filter(shareWithOthers=True)
+    ]
+    return JsonResponse(responseList, safe=False)
 
 
 def cmsData(request, cmsId):
     responseCMS = CMSCache.objects.get(id=cmsId)
-    responseDict = {"name": responseCMS.name, "domain": responseCMS.domain, "public_key": responseCMS.public_key}
-    return HttpResponse(json.dumps(responseDict))
+    responseDict = {
+        "name": responseCMS.name,
+        "domain": responseCMS.domain,
+        "public_key": responseCMS.public_key
+    }
+    return JsonResponse(responseDict, safe=False)
 
 
 def dataOfSites(request):
@@ -29,6 +32,6 @@ def dataOfSites(request):
         "prefix": "",
         "name_without_prefix": site.title,
     } for site in sites]
-    return HttpResponse(json.dumps(responseList))
+    return JsonResponse(responseList)
 
     #todo: prefix, name_without_prefix and aliases

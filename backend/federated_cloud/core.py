@@ -31,14 +31,14 @@ def sendDataOfSitesRequest(cmsCache):
     responseList = json.loads(response)
     for responseElement in responseList:
         SiteCache(
-             parentCMS=cmsCache,
-             path=responseElement["path"],
-             postal_code=responseElement["postal_code"],
-             prefix=responseElement["prefix"],
-             name_without_prefix=responseElement["name_without_prefix"],
-             aliases=responseElement["aliases"],
-             latitude=responseElement["latitude"],
-             longitude=responseElement["longitude"],
+            parentCMS=cmsCache,
+            path=responseElement["path"],
+            postal_code=responseElement["postal_code"],
+            prefix=responseElement["prefix"],
+            name_without_prefix=responseElement["name_without_prefix"],
+            aliases=responseElement["aliases"],
+            latitude=responseElement["latitude"],
+            longitude=responseElement["longitude"],
         ).save()
 
 

@@ -1,7 +1,7 @@
 from django.db.models import Exists, OuterRef
 from django.http import JsonResponse, HttpResponse
 
-from cms.models import Site, Extra, Language, LanguageTree
+from cms.models import Site, Extra, Language
 
 PREFIXES = [
     'EAE',
@@ -12,18 +12,18 @@ PREFIXES = [
 
 
 def sites(_):
-    def strip_prefix(title):
+    def strip_prefix(name):
         for p in PREFIXES:
-            if title.startswith(p):
-                return p, title[len(p) + 1:]  # +1 for one whitespace
-        return None, title
+            if name.startswith(p):
+                return p, name[len(p) + 1:]  # +1 for one whitespace
+        return None, name
 
     def transform_site(s):
-        prefix, name_without_prefix = strip_prefix(s.title)
+        prefix, name_without_prefix = strip_prefix(s.name)
         return {
-            'id': s.name,
-            'name': s.title,
-            'path': f'/{s.name}/',  # todo: tbd
+            'id': s.slug,
+            'name': s.name,
+            'path': s.slug,
             'live': s.status == Site.ACTIVE,
             'prefix': prefix,
             'name_without_prefix': name_without_prefix,
@@ -52,11 +52,7 @@ def pushnew(_):
     dutch = Language(code='nl', title='Nederlands', text_direction='ltr')
     de.save()
     dutch.save()
-    main_lang = LanguageTree(language=de)
-    main_lang.save()
-    dutch_lang = LanguageTree(parent=main_lang, language=dutch)
-    dutch_lang.save()
-    site = Site(title='Augsburg', name='augsburg', language_tree=dutch_lang,
+    site = Site(title='Augsburg', name='augsburg', languages=[de, dutch],
                 push_notification_channels=[])
     site.save()
     return HttpResponse('Pushing successful')

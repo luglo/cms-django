@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 from django.shortcuts import render
-from cms.models.page import Page
+from ...models.page import Page
 
 
 @method_decorator(login_required, name='dispatch')
@@ -11,9 +11,13 @@ class PageTreeView(TemplateView):
     base_context = {'current_menu_item': 'pages'}
 
     def get(self, request, *args, **kwargs):
-        pages = Page.get_tree_view()
+        pages = Page.get_tree_view(request)
 
-        return render(request,
-                      self.template_name,
-                      {**self.base_context,
-                       'pages': pages})
+        return render(
+            request,
+            self.template_name,
+            {
+                **self.base_context,
+                'pages': pages
+            }
+        )

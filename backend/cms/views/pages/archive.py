@@ -7,7 +7,7 @@ from django.shortcuts import render
 
 
 @login_required
-def archive(request):
+def archive(request, site_slug):
     """View for creating and rendering archive page
     Args:
         request : Object representing the user request

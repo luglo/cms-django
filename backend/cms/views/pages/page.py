@@ -1,9 +1,16 @@
+"""
+
+Returns:
+    [type]: [description]
+"""
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.utils.translation import ugettext as _
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 from django.shortcuts import render
-from cms.models.page import PageTranslation
+from ...models import Page, PageTranslation, Site
 from .page_form import PageForm
 
 
@@ -28,28 +35,30 @@ class PageView(TemplateView):
             })
         else:
             form = PageForm()
+        form.fields['parent'].queryset = Page.objects.filter(
+            site__slug=Site.get_current_site(request).slug
+        )
         return render(request, self.template_name, {
             'form': form, **self.base_context})
 
-    def post(self, request):
+    def post(self, request, site_slug):
         # TODO: error handling
         form = PageForm(request.POST, user=request.user)
         if form.is_valid():
-            if form.data['submit_publish']:
-                # TODO: handle status
-
-                if self.page_translation_id:
-                    form.save_page(
-                        page_translation_id=self.page_translation_id)
-                else:
-                    form.save()
-
-                messages.success(request, 'Seite wurde erfolgreich erstellt.')
+            if self.page_translation_id:
+                form.save_page(
+                    site_slug=site_slug,
+                    page_translation_id=self.page_translation_id,
+                )
+                messages.success(request, _('Page was saved successfully.'))
             else:
-                messages.success(request, 'Seite wurde erfolgreich gespeichert.')
+                form.save_page(
+                    site_slug=site_slug,
+                )
+                messages.success(request, _('Page was created successfully.'))
             # TODO: improve messages
         else:
-            messages.error(request, 'Es sind Fehler aufgetreten.')
+            messages.error(request, _('Errors have occurred.'))
 
         return render(request, self.template_name, {
             'form': form, **self.base_context})

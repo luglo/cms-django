@@ -1,3 +1,8 @@
+"""Class defining event-related database models
+
+Raises:
+    ValidationError: Raised when an value does not match the requirements
+"""
 from datetime import datetime, time, date
 
 from dateutil.rrule import weekday, rrule
@@ -6,6 +11,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.utils import timezone
 
 from .language import Language
 from .poi import POI
@@ -13,6 +19,15 @@ from .site import Site
 
 
 class RecurrenceRule(models.Model):
+    """
+    Object to define the recurrence frequency
+    Args:
+        models ([type]): [description]
+    Raises:
+        ValidationError: Error raised when weekdays_for_weekly does not fit into the range
+        from 0 to 6 or when the value of weekdays_for_monthly isn't between -5 and 5.
+    """
+
     DAILY = 'DAILY'
     WEEKLY = 'WEEKLY'
     MONTHLY = 'MONTHLY'
@@ -77,27 +92,40 @@ class RecurrenceRule(models.Model):
         models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(6)]),
         null=True)
     weekday_for_monthly = models.IntegerField(null=True)
-    week_for_monthly = models.IntegerField(null=True,
-                                           validators=[MinValueValidator(-5), MaxValueValidator(5)])
+    week_for_monthly = models.IntegerField(
+        null=True,
+        validators=[MinValueValidator(-5), MaxValueValidator(5)]
+    )
     end_date = models.DateField(null=True, default=None)
 
     def clean(self):
         if self.frequency == RecurrenceRule.WEEKLY \
                 and (self.weekdays_for_weekly is None or self.weekdays_for_weekly.size() == 0):
             raise ValidationError('No weekdays selected for weekly recurrence')
-        elif self.frequency == 'monthly' and (
+        if self.frequency == 'monthly' and (
                 self.weekday_for_monthly is None or self.week_for_monthly is None):
             raise ValidationError('No weekday or no week selected for monthly recurrence')
 
 
 class Event(models.Model):
-    site = models.ForeignKey(Site)
+    """Database object representing an event with name, date and the option to add recurrency.
+
+    Args:
+        models : Databas model inherit from the standard django models
+
+    Raises:
+        ValidationError: Raised if the recurrence end date is after the start date
+        ValidationError: Raised if start or end date isn't null when the other one is
+        ValidationError: Raised if the end date is before the start date
+    """
+
+    site = models.ForeignKey(Site, on_delete=models.CASCADE)
     location = models.ForeignKey(POI, on_delete=models.PROTECT, null=True, blank=True)
     start_date = models.DateField()
     start_time = models.TimeField(null=True)
     end_date = models.DateField()
     end_time = models.TimeField(null=True)
-    recurrence_rule = models.OneToOneField(RecurrenceRule, null=True)
+    recurrence_rule = models.OneToOneField(RecurrenceRule, null=True, on_delete=models.SET_NULL)
     picture = models.ImageField(null=True, blank=True, upload_to='events/%Y/%m/%d')
 
     def clean(self):
@@ -115,10 +143,21 @@ class Event(models.Model):
         return self.event_translations.filter(event_id=self.id, language='de').first().title
 
     def get_translations(self):
+        """Provides all translations of the Event
+        Returns:
+            [event_translations]: Array with all translations related to this event
+        """
+
         return self.event_translations.all()
 
     @classmethod
     def get_list_view(cls):
+        """
+        Function: Get List View
+        Returns:
+            [events]: Array of all Events
+        """
+
         event_translations = EventTranslation.objects.filter(
             language='de'
         ).select_related('user')
@@ -163,11 +202,13 @@ class Event(models.Model):
                                                       recurrence.week_for_monthly),
                                     until=until)
             return [x for x in occurrences if start <= x <= end or start <= x + event_span <= end]
-        else:
-            return [event_start] if start <= event_start <= end or start <= event_end <= end else []
+        return [event_start] if start <= event_start <= end or start <= event_end <= end else []
 
 
 class EventTranslation(models.Model):
+    """
+    Database object representing an event tranlsation
+    """
     STATUS = (
         ('draft', 'Entwurf'),
         ('in-review', 'Ausstehender Review'),
@@ -177,11 +218,11 @@ class EventTranslation(models.Model):
     title = models.CharField(max_length=250)
     description = models.TextField()
     permalink = models.CharField(max_length=60)
-    language = models.ForeignKey(Language)
+    language = models.ForeignKey(Language, on_delete=models.CASCADE)
     version = models.PositiveIntegerField(default=0)
     minor_edit = models.BooleanField(default=False)
     public = models.BooleanField(default=False)
-    event = models.ForeignKey(Event, related_name='event_translations')
-    created_date = models.DateTimeField(auto_now_add=True)
+    event = models.ForeignKey(Event, related_name='event_translations', on_delete=models.CASCADE)
+    created_date = models.DateTimeField(default=timezone.now)
     last_updated = models.DateTimeField(auto_now=True)
-    creator = models.ForeignKey(User)
+    creator = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)

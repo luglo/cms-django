@@ -1,5 +1,14 @@
+"""
+File routing to the admin site
+"""
+
+
 from django.contrib import admin
 
-from .models.site import Site
+from .models import Site, Language, LanguageTreeNode, Page, PageTranslation
 
 admin.site.register(Site)
+admin.site.register(Language)
+admin.site.register(LanguageTreeNode)
+admin.site.register(Page)
+admin.site.register(PageTranslation)

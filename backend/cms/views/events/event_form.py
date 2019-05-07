@@ -50,14 +50,14 @@ class EventForm(forms.ModelForm):
                      ('fr', 'Französisch'),
                      ('tr', 'Türkisch')])
 
-    def save_event(self, event_translation_id=None):
+    def save_event(self, site_slug, event_translation_id=None):
         # TODO: version, active_version
 
         if event_translation_id:
-            p = EventTranslation.objects.filter(
+            event_object = EventTranslation.objects.filter(
                 id=event_translation_id).select_related('event').first()
-            event = Event.objects.get(id=p.event.id)
-            event_translation = EventTranslation.objects.get(id=p.id)
+            event = Event.objects.get(id=event_object.event.id)
+            event_translation = EventTranslation.objects.get(id=event_object.id)
         else:
             event = Event()
             event_translation = EventTranslation()
@@ -86,6 +86,7 @@ class EventForm(forms.ModelForm):
             if self.cleaned_data['has_recurrence_end_date']:
                 event.recurrence_rule.end_date = self.cleaned_data['recurrence_end_date']
             event.recurrence_rule.save()
+        event.site = Site.objects.get(slug=site_slug)
         event.save()
 
         # save event translation

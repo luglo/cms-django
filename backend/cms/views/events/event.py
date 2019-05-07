@@ -46,7 +46,7 @@ class EventView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, {
             'event_form': event_form, **self.base_context})
 
-    def post(self, request, event_translation_id=None):
+    def post(self, request, site_slug):
         # TODO: error handling
         event_form = EventForm(request.POST, user=request.user)
         if event_form.is_valid():
@@ -54,10 +54,15 @@ class EventView(LoginRequiredMixin, TemplateView):
             if request.POST.get('submit_publish', False) or request.POST.get('submit_save', False):
                 # TODO: handle status
 
-                if event_translation_id:
-                    event_form.save_event(event_translation_id=event_translation_id)
+                if self.event_translation_id:
+                    event_form.save_event(
+                        site_slug=site_slug,
+                        event_translation_id=self.event_translation_id
+                    )
                 else:
-                    event_form.save_event()
+                    event_form.save_event(
+                        site_slug=site_slug
+                    )
 
                 messages.success(request, 'Event wurde erfolgreich erstellt.')
             else:

@@ -13,7 +13,7 @@
                 <input type="search" placeholder="Suche" class="h-full pl-10 pr-4 rounded shadow">
             </form>
             <div class="w-1/2 flex flex-wrap justify-end">
-                <a href="{% url 'new_event' %}"
+                <a href="{% url 'new_event' site_slug=site.slug %}"
                    class="bg-grey-dark hover:bg-integreat hover:text-grey-darkest text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                     Event erstellen
                 </a>
@@ -28,16 +28,16 @@
                 <th class="text-sm text-left uppercase py-3 px-2">
                     <div class="lang-grid flags">
                         <a href="">
-                            <img src="{% static 'images/flags/ar.png' %}" title="Arabisch"/>
+                            <img src="{% static 'images/flags/ar-ma.png' %}" title="Arabisch"/>
                         </a>
                         <a href="">
-                            <img src="{% static 'images/flags/de.png' %}" title="Deutsch"/>
+                            <img src="{% static 'images/flags/de-de.png' %}" title="Deutsch"/>
                         </a>
                         <a href="">
-                            <img src="{% static 'images/flags/en.png' %}" title="Englisch"/>
+                            <img src="{% static 'images/flags/en-gb.png' %}" title="Englisch"/>
                         </a>
                         <a href="">
-                            <img src="{% static 'images/flags/fa.png' %}" title="Farsi"/>
+                            <img src="{% static 'images/flags/fa-ir.png' %}" title="Farsi"/>
                         </a>
                     </div>
                 </th>

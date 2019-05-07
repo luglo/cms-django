@@ -159,11 +159,11 @@ class Event(models.Model):
         """
 
         event_translations = EventTranslation.objects.filter(
-            language='de'
+            language__code='de'
         ).select_related('user')
         events = cls.objects.all().prefetch_related(
             models.Prefetch('event_translations', queryset=event_translations)
-        ).filter(event_translations__language='de')
+        ).filter(event_translations__language__code='de')
         return events
 
     def get_occurrences(self, start, end):

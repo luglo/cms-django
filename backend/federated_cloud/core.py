@@ -5,33 +5,37 @@ import requests
 from federated_cloud.models import CMSCache, SiteCache
 
 
-def sendCmsIdsRequest(domain):
-    response = requests.get(domain + "/cmsIds")
-    responseList = json.loads(response.text)
-    return responseList
+def send_federated_cloud_request(domain, tail):
+    return requests.get(domain + "/federated-cloud/" + tail)
 
 
-def sendCmsDataRequest(domain, cmsId):
-    response = requests.get(domain + "/cmsData/" + cmsId)
-    responseDict = json.loads(response)
-    responseCMS = CMSCache(
-        id=cmsId,
-        name=responseDict["name"],
-        domain=responseDict["domain"],
-        public_key=responseDict["public_key"],
+def ask_for_cms_ids(domain):
+    response = send_federated_cloud_request(domain, "cms-ids")
+    response_list = json.loads(response.text)
+    return response_list
+
+
+def ask_for_cms_data(domain, cms_id):
+    response = send_federated_cloud_request(domain, "cms-data/" + str(cms_id))
+    response_dict = json.loads(response)
+    response_cms = CMSCache(
+        id=cms_id,
+        name=response_dict["name"],
+        domain=response_dict["domain"],
+        public_key=response_dict["public_key"],
         useSites=True,
         askForCMSs=True,
         shareWithOthers=True
     )
-    responseCMS.save()
+    response_cms.save()
 
 
-def sendDataOfSitesRequest(cmsCache):
-    response = requests.get(cmsCache.domain + "/dataOfSites")
-    responseList = json.loads(response)
-    for responseElement in responseList:
+def ask_for_site_data(cms_cache):
+    response = send_federated_cloud_request(cms_cache.domain, "site-data")
+    response_list = json.loads(response)
+    for responseElement in response_list:
         SiteCache(
-            parentCMS=cmsCache,
+            parentCMS=cms_cache,
             path=responseElement["path"],
             postal_code=responseElement["postal_code"],
             prefix=responseElement["prefix"],
@@ -42,7 +46,7 @@ def sendDataOfSitesRequest(cmsCache):
         ).save()
 
 
-def sendOffer():
+def send_offer():
     pass
 
-#todo error-handling
+# todo error-handling

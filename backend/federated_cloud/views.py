@@ -4,15 +4,15 @@ from cms.models import Site
 from federated_cloud.models import CMSCache
 
 
-def cmsIds(request):
+def cms_ids(request):
     response_list = [
         cmsCacheEntry.id for cmsCacheEntry in CMSCache.objects.filter(shareWithOthers=True)
     ]
     return JsonResponse(response_list, safe=False)
 
 
-def cmsData(request, cmsId):
-    response_cms = CMSCache.objects.get(id=cmsId)
+def cms_data(request, cms_id):
+    response_cms = CMSCache.objects.get(id=cms_id)
     response_dict = {
         "name": response_cms.name,
         "domain": response_cms.domain,
@@ -21,7 +21,7 @@ def cmsData(request, cmsId):
     return JsonResponse(response_dict, safe=False)
 
 
-def dataOfSites(request):
+def site_data(request):
     sites = Site.objects.all()
     response_list = [{
         "path": site.slug,
@@ -34,4 +34,4 @@ def dataOfSites(request):
     } for site in sites]
     return JsonResponse(response_list, safe=False)
 
-    #todo: prefix, name_without_prefix and aliases
+# todo: prefix, name_without_prefix and aliases

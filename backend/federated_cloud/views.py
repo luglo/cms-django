@@ -5,33 +5,33 @@ from federated_cloud.models import CMSCache
 
 
 def cmsIds(request):
-    responseList = [
+    response_list = [
         cmsCacheEntry.id for cmsCacheEntry in CMSCache.objects.filter(shareWithOthers=True)
     ]
-    return JsonResponse(responseList, safe=False)
+    return JsonResponse(response_list, safe=False)
 
 
 def cmsData(request, cmsId):
-    responseCMS = CMSCache.objects.get(id=cmsId)
-    responseDict = {
-        "name": responseCMS.name,
-        "domain": responseCMS.domain,
-        "public_key": responseCMS.public_key
+    response_cms = CMSCache.objects.get(id=cmsId)
+    response_dict = {
+        "name": response_cms.name,
+        "domain": response_cms.domain,
+        "public_key": response_cms.public_key
     }
-    return JsonResponse(responseDict, safe=False)
+    return JsonResponse(response_dict, safe=False)
 
 
 def dataOfSites(request):
     sites = Site.objects.all()
-    responseList = [{
-        "path": site.name,
+    response_list = [{
+        "path": site.slug,
         "aliases": "",
         "latitude": site.latitude,
         "longitude": site.longitude,
         "postal_code": site.postal_code,
         "prefix": "",
-        "name_without_prefix": site.title,
+        "name_without_prefix": site.name,
     } for site in sites]
-    return JsonResponse(responseList)
+    return JsonResponse(response_list, safe=False)
 
     #todo: prefix, name_without_prefix and aliases

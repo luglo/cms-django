@@ -677,6 +677,7 @@ msgstr "Sprach-Baum wurde erfolgreich erstellt."
 
 #: views/language_tree/language_tree_node.py:63 views/pages/page.py:62
 #: views/regions/regions.py:70
+#: views/events/event.py:84
 msgid "Errors have occurred."
 msgstr "Es sind Fehler aufgetreten."
 
@@ -721,7 +722,7 @@ msgid ""
 "A message with instructions for resetting your password has been sent to the "
 "e-mail address provided."
 msgstr ""
-"Eine Nachricht mit Anweisungen zum Zurücksetzen IhresPasswort wurde an die "
+"Eine Nachricht mit Anweisungen zum Zurücksetzen Ihres Passworts wurde an die "
 "angegebene E-Mail Adresse geschickt."
 
 #: views/registration/registration.py:69
@@ -743,3 +744,11 @@ msgstr "Sie können sich jetzt mit dem neuen Passwort einloggen."
 
 #~ msgid "Integreat CMS"
 #~ msgstr "Integreat CMS"
+
+#: views/events/event.py:79
+msgid "Event was saved successfully."
+msgstr "Veranstaltung wurde erfolgreich gespeichert."
+
+#: views/events/event.py:81
+msgid "Event was created successfully."
+msgstr "Veranstaltung wurde erfolgreich erstellt."

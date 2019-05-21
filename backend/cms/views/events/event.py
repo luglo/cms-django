@@ -3,10 +3,12 @@ from datetime import time
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
+from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView
 
 from cms.models.event import Event, EventTranslation
 from cms.views.events.event_form import EventForm
+from cms.views.pois.poi_form import POIForm
 
 
 class EventView(LoginRequiredMixin, TemplateView):
@@ -64,12 +66,12 @@ class EventView(LoginRequiredMixin, TemplateView):
                         site_slug=site_slug
                     )
 
-                messages.success(request, 'Event wurde erfolgreich erstellt.')
+                messages.success(request, _('Event was saved successfully.'))
             else:
-                messages.success(request, 'Event wurde erfolgreich gespeichert.')
+                messages.success(request, _('Event was created successfully.'))
             # TODO: improve messages
         else:
-            messages.error(request, 'Es sind Fehler aufgetreten.')
+            messages.error(request, _('Errors have occurred.'))
 
         return render(request, self.template_name, {
             'event_form': event_form, **self.base_context})

@@ -7,15 +7,27 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-21 16:16+0000\n"
+"POT-Creation-Date: 2019-05-28 13:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Timo Ludwig <ludwig@integreat-app.de>\n"
+"Last-Translator: Florian Hofhammer <hofhammer@integreat-app.de>\n"
 "Language-Team:\n"
 "Language: German\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: backend/cms/models/event.py:217 backend/cms/models/page.py:125
+msgid "Draft"
+msgstr "Entwurf"
+
+#: backend/cms/models/event.py:218 backend/cms/models/page.py:126
+msgid "Pending Review"
+msgstr "Review ausstehend"
+
+#: backend/cms/models/event.py:219 backend/cms/models/page.py:127
+msgid "Finished Review"
+msgstr "Review abgeschlossen"
 
 #: backend/cms/models/language.py:23
 msgid "Left to right"
@@ -24,18 +36,6 @@ msgstr "Links nach Rechts"
 #: backend/cms/models/language.py:24
 msgid "Right to left"
 msgstr "Rechts nach Links"
-
-#: backend/cms/models/page.py:125
-msgid "Draft"
-msgstr "Entwurf"
-
-#: backend/cms/models/page.py:126
-msgid "Pending Review"
-msgstr "Review ausstehend"
-
-#: backend/cms/models/page.py:127
-msgid "Finished Review"
-msgstr "Review abgeschlossen"
 
 #: backend/cms/models/site.py:19
 #: backend/cms/templates/language_tree/tree.html:31
@@ -744,6 +744,56 @@ msgstr "Bild/PNG"
 msgid "Table Document/CSV"
 msgstr "Tabellendokument/CSV"
 
+#: backend/cms/views/events/event.py:79
+msgid "Event was saved successfully."
+msgstr "Veranstaltung wurde erfolgreich gespeichert."
+
+#: backend/cms/views/events/event.py:81
+msgid "Event was created successfully."
+msgstr "Veranstaltung wurde erfolgreich erstellt."
+
+#: backend/cms/views/events/event.py:84
+#: backend/cms/views/language_tree/language_tree_node.py:64
+#: backend/cms/views/pages/page.py:104 backend/cms/views/regions/regions.py:70
+msgid "Errors have occurred."
+msgstr "Es sind Fehler aufgetreten."
+
+#: backend/cms/views/events/event_form.py:22
+msgid "Start (date)"
+msgstr "Beginn (Datum)"
+
+#: backend/cms/views/events/event_form.py:23
+msgid "Start (time)"
+msgstr "Beginn (Uhrzeit)"
+
+#: backend/cms/views/events/event_form.py:24
+msgid "End (date)"
+msgstr "Ende (Datum)"
+
+#: backend/cms/views/events/event_form.py:25
+msgid "End (time)"
+msgstr "Ende (Zeit)"
+
+#: backend/cms/views/events/event_form.py:26
+msgid "Frequency"
+msgstr "Häufigkeit"
+
+#: backend/cms/views/events/event_form.py:35
+msgid "Repetition end date"
+msgstr "Enddatum der Wiederholung"
+
+#: backend/cms/views/events/event_form.py:37
+msgid "Whole day"
+msgstr "Ganztägig"
+
+#: backend/cms/views/events/event_form.py:38
+msgid "Repeats"
+msgstr "Wiederkehrend"
+
+#: backend/cms/views/events/event_form.py:39
+msgid "Repetition ends"
+msgstr "Wiederholung endet"
+
 #: backend/cms/views/general/general.py:5
 msgid "Bad request"
 msgstr "Inkorrekte Anfrage"
@@ -800,12 +850,6 @@ msgstr "Sprach-Baum wurde erfolgreich gespeichert."
 msgid "Language tree node was created successfully."
 msgstr "Sprach-Baum wurde erfolgreich erstellt."
 
-#: backend/cms/views/language_tree/language_tree_node.py:64
-#: backend/cms/views/pages/page.py:104 backend/cms/views/regions/regions.py:70
-#: backend/cms/views/events/event.py:84
-msgid "Errors have occurred."
-msgstr "Es sind Fehler aufgetreten."
-
 #: backend/cms/views/language_tree/language_tree_node_form.py:62
 msgid ""
 "This region has already a default language.Please specify a source language "
@@ -832,7 +876,7 @@ msgstr "Sprache wurde erfolgreich erstellt."
 
 #: backend/cms/views/languages/languages.py:60
 msgid "Es sind Fehler aufgetreten."
-msgstr ""
+msgstr "Errors have occurred."
 
 #: backend/cms/views/pages/page.py:75
 #, fuzzy
@@ -948,11 +992,3 @@ msgstr "Sie können sich jetzt mit dem neuen Passwort einloggen."
 
 #~ msgid "Integreat CMS"
 #~ msgstr "Integreat CMS"
-
-#: backend/cms/views/events/event.py:79
-msgid "Event was saved successfully."
-msgstr "Veranstaltung wurde erfolgreich gespeichert."
-
-#: backend/cms/views/events/event.py:81
-msgid "Event was created successfully."
-msgstr "Veranstaltung wurde erfolgreich erstellt."

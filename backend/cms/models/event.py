@@ -12,6 +12,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 
 from .language import Language
 from .poi import POI
@@ -161,6 +162,7 @@ class Event(models.Model):
         event_translations = EventTranslation.objects.filter(
             language__code='de'
         ).select_related('user')
+        # TODO: filter language
         events = cls.objects.all().prefetch_related(
             models.Prefetch('event_translations', queryset=event_translations)
         ).filter(event_translations__language__code='de')
@@ -209,20 +211,33 @@ class EventTranslation(models.Model):
     """
     Database object representing an event tranlsation
     """
+    event = models.ForeignKey(Event, related_name='event_translations', on_delete=models.CASCADE)
+    slug = models.SlugField(max_length=200, unique=True)
     STATUS = (
-        ('draft', 'Entwurf'),
-        ('in-review', 'Ausstehender Review'),
-        ('reviewed', 'Review abgeschlossen'),
+        ('draft', _('Draft')),
+        ('in-review', _('Pending Review')),
+        ('reviewed', _('Finished Review')),
     )
     status = models.CharField(max_length=9, choices=STATUS, default='draft')
     title = models.CharField(max_length=250)
     description = models.TextField()
     permalink = models.CharField(max_length=60)
-    language = models.ForeignKey(Language, on_delete=models.CASCADE)
+    language = models.ForeignKey(
+        Language,
+        on_delete=models.CASCADE
+    )
     version = models.PositiveIntegerField(default=0)
     minor_edit = models.BooleanField(default=False)
     public = models.BooleanField(default=False)
-    event = models.ForeignKey(Event, related_name='event_translations', on_delete=models.CASCADE)
     created_date = models.DateTimeField(default=timezone.now)
     last_updated = models.DateTimeField(auto_now=True)
     creator = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+
+    @property
+    def permalink(self):
+        return self.event.site.slug + '/' \
+               + self.language.code + '/' \
+               + self.event.event_translations.get(language=self.language).slug + '/'
+
+    def __str__(self):
+        return self.title

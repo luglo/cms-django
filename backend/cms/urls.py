@@ -104,18 +104,21 @@ urlpatterns = [
         ])),
         url(r'^events/', include([
             url(r'^$', events.EventListView.as_view(), name='events'),
-            url(r'^new$', events.EventView.as_view(), name='new_event'),
-            url(r'^(?P<event_translation_id>[0-9]+)/', include([
-                url(
-                    r'^edit$',
-                    events.EventView.as_view(),
-                    name='edit_event'
-                ),
-                url(
-                    r'^delete$',
-                    events.EventView.as_view(),
-                    name='delete_event'
-                ),
+            url(r'^(?P<language_code>[-\w]+)/', include([
+                url(r'^$', events.EventListView.as_view(), name='events'),
+                url(r'^new$', events.EventView.as_view(), name='new_event'),
+                url(r'^(?P<event_id>[0-9]+)/', include([
+                    url(
+                        r'^edit$',
+                        events.EventView.as_view(),
+                        name='edit_event'
+                    ),
+                    url(
+                        r'^delete$',
+                        events.EventView.as_view(),
+                        name='delete_event'
+                    ),
+                ])),
             ])),
         ])),
         url(r'^language-tree/', include([

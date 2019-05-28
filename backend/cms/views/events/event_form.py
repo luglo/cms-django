@@ -31,7 +31,8 @@ class EventForm(forms.ModelForm):
     weekday_for_monthly = forms.ChoiceField(choices=RecurrenceRule.WEEKDAYS, required=False)
     week_for_monthly = forms.ChoiceField(
         choices=[(1, '1.'), (2, '2.'), (3, '3.'), (4, '4.'), (5, '5.')], required=False)
-    recurrence_end_date = forms.DateField(input_formats=['%d.%m.%Y'], label=_('Repetition end date'),
+    recurrence_end_date = forms.DateField(input_formats=['%d.%m.%Y'],
+                                          label=_('Repetition end date'),
                                           required=False)
     is_all_day = forms.BooleanField(label=_('Whole day'), required=False)
     is_recurring = forms.BooleanField(label=_('Repeats'), required=False)
@@ -72,21 +73,21 @@ class EventForm(forms.ModelForm):
 
         # guarantee a unique slug
         if (
-            (
                 (
-                    # new event has to be created
-                    event_id is None
+                    (
+                        # new event has to be created
+                        event_id is None
+                        or
+                        # new translation has to be created
+                        event_translation is None
+                    )
                     or
-                    # new translation has to be created
-                    event_translation is None
+                    # slug has changed
+                    event_translation.slug != slug
                 )
-                or
-                # slug has changed
-                event_translation.slug != slug
-            )
-            and
-            # new slug already exists
-            EventTranslation.objects.filter(slug=slug).exists()
+                and
+                # new slug already exists
+                EventTranslation.objects.filter(slug=slug).exists()
         ):
             old_slug = slug
             i = 1

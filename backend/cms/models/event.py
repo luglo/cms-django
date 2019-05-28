@@ -152,20 +152,21 @@ class Event(models.Model):
         return self.event_translations.all()
 
     @classmethod
-    def get_list_view(cls):
+    def get_list_view(cls, site_slug):
         """
         Function: Get List View
+
+        Args:
+            site_slug: slug of the site the event belongs to
+
         Returns:
             [events]: Array of all Events
         """
-
-        event_translations = EventTranslation.objects.filter(
-            language__code='de'
-        ).select_related('user')
-        # TODO: filter language
         events = cls.objects.all().prefetch_related(
-            models.Prefetch('event_translations', queryset=event_translations)
-        ).filter(event_translations__language__code='de')
+            'event_translations'
+        ).filter(
+            site__slug=site_slug
+        )
         return events
 
     def get_occurrences(self, start, end):
@@ -221,7 +222,6 @@ class EventTranslation(models.Model):
     status = models.CharField(max_length=9, choices=STATUS, default='draft')
     title = models.CharField(max_length=250)
     description = models.TextField()
-    permalink = models.CharField(max_length=60)
     language = models.ForeignKey(
         Language,
         on_delete=models.CASCADE

@@ -48,28 +48,36 @@ class EventView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, {
             'event_form': event_form, **self.base_context})
 
-    def post(self, request, site_slug):
+    def post(self, request, *args, **kwargs):
+        site_slug = kwargs.get('site_slug')
+        event_id = kwargs.get('event_id')
+        language_code = kwargs.get('language_code')
         # TODO: error handling
         event_form = EventForm(request.POST, user=request.user)
-        if event_form.is_valid():
-            # TODO: set status according to 'save' or 'publish'
-            if request.POST.get('submit_publish', False) or request.POST.get('submit_save', False):
-                # TODO: handle status
-
-                if self.event_translation_id:
-                    event_form.save_event(
-                        site_slug=site_slug,
-                        event_translation_id=self.event_translation_id
-                    )
+        poi_form = POIForm(request.POST, user=request.user)
+        if event_form.is_valid() and poi_form.is_valid():
+            if request.POST.get('submit_publish', False):
+                event_form.save_event(
+                    site_slug=site_slug,
+                    event_id=event_id,
+                    language_code=language_code,
+                    publish=True
+                )
+                if event_id is not None:
+                    messages.success(request, _('Event was published successfully.'))
                 else:
-                    event_form.save_event(
-                        site_slug=site_slug
-                    )
-
-                messages.success(request, _('Event was saved successfully.'))
+                    messages.success(request, _('Event was created and published successfully.'))
             else:
-                messages.success(request, _('Event was created successfully.'))
-            # TODO: improve messages
+                event_form.save_event(
+                    site_slug=site_slug,
+                    event_id=event_id,
+                    language_code=language_code,
+                    publish=False
+                )
+                if event_id is not None:
+                    messages.success(request, _('Event was saved successfully.'))
+                else:
+                    messages.success(request, _('Event was created successfully.'))
         else:
             messages.error(request, _('Errors have occurred.'))
 

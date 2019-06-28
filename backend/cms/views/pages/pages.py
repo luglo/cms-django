@@ -1,15 +1,21 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
 
 from ...models import Page, Site, Language
+from ...decorators import region_permission_required
 
 
 @method_decorator(login_required, name='dispatch')
-class PageTreeView(TemplateView):
+@method_decorator(region_permission_required, name='dispatch')
+class PageTreeView(PermissionRequiredMixin, TemplateView):
+    permission_required = 'cms.view_pages'
+    raise_exception = True
+
     template_name = 'pages/tree.html'
     base_context = {'current_menu_item': 'pages'}
 
@@ -17,6 +23,7 @@ class PageTreeView(TemplateView):
         # current site
         site_slug = kwargs.get('site_slug')
         site = Site.objects.get(slug=site_slug)
+
         # current language
         language_code = kwargs.get('language_code', None)
         if language_code:
@@ -34,8 +41,10 @@ class PageTreeView(TemplateView):
             return redirect('language_tree', **{
                 'site_slug': site_slug,
             })
+
         # all pages of the current site in the current language
         pages = Page.get_tree(site_slug)
+        
         # all other languages of current site
         languages = site.languages
 
@@ -45,6 +54,7 @@ class PageTreeView(TemplateView):
             {
                 **self.base_context,
                 'pages': pages,
+                'archived_count': Page.archived_count(site_slug),
                 'language': language,
                 'languages': languages,
             }

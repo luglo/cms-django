@@ -1,16 +1,22 @@
 """Models representing a page and page translation with content
 """
 
-from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.auth.models import User
+import logging
+
 from django.db import models
+from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+
 from mptt.models import MPTTModel, TreeForeignKey
 
 from .language import Language
 from .site import Site
+
+
+logger = logging.getLogger(__name__)
 
 
 class Page(MPTTModel):
@@ -33,7 +39,10 @@ class Page(MPTTModel):
         upload_to='pages/%Y/%m/%d'
     )
     site = models.ForeignKey(Site, related_name='pages', on_delete=models.CASCADE)
-    mirrored_page = models.ForeignKey('self', null=True, on_delete=models.PROTECT)
+    archived = models.BooleanField(default=False)
+    mirrored_page = models.ForeignKey('self', null=True, blank=True, on_delete=models.PROTECT)
+    editors = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='editors', blank=True)
+    publishers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='publishers', blank=True)
     created_date = models.DateTimeField(default=timezone.now)
     last_updated = models.DateTimeField(auto_now=True)
 
@@ -69,27 +78,62 @@ class Page(MPTTModel):
             'language_code': self.site.default_language.code,
         })
 
+    def get_archived(site_slug):
+        return Page.objects.filter(archived=True, site__slug=site_slug)
+
+    def archived_count(site_slug):
+        return Page.objects.filter(archived=True, site__slug=site_slug).count()
+
     def __str__(self):
-        # TODO: get current language title
-        translation = PageTranslation.objects.filter(page=self).first()
-        if translation:
-            return translation.title
-        return ""
+        translations = PageTranslation.objects.filter(page=self)
+        german_translation = translations.filter(language__code='de-de').first()
+        english_translation = translations.filter(language__code='en-gb').first()
+        if german_translation:
+            slug = german_translation.slug
+        elif english_translation:
+            slug = english_translation.slug
+        elif translations.exists():
+            slug = translations.first()
+        else:
+            slug = ''
+        return '(id: {}, slug: {})'.format(self.id, slug)
 
     @classmethod
-    def get_tree(cls, site_slug):
+    def get_tree(cls, site_slug, archived=False):
         """Function for building up a Treeview of all pages
+        
+        Args:
+            site_slug: slug of the site the page belongs to
+            archived:  if true archived pages will be included
 
         Returns:
             [pages]: Array of pages connected with their relations
         """
 
-        pages = cls.objects.all().prefetch_related(
-            'page_translations'
-        ).filter(
-            site__slug=site_slug
-        )
+        if archived:
+            pages = cls.objects.all().prefetch_related(
+                'page_translations'
+            ).filter(
+                site__slug=site_slug
+            )
+        else:
+            pages = cls.objects.all().prefetch_related(
+                'page_translations'
+            ).filter(
+                site__slug=site_slug,
+                archived=False
+            )
+
         return pages
+
+    class Meta:
+        default_permissions = ()
+        permissions = (
+            ('view_pages', 'Can view pages'),
+            ('edit_pages', 'Can edit pages'),
+            ('publish_pages', 'Can publish pages'),
+            ('grant_page_permissions', 'Can grant page permissions'),
+        )
 
 
 class PageTranslation(models.Model):
@@ -100,7 +144,7 @@ class PageTranslation(models.Model):
     """
 
     page = models.ForeignKey(Page, related_name='page_translations', on_delete=models.CASCADE)
-    slug = models.SlugField(max_length=200, unique=True)
+    slug = models.SlugField(max_length=200, blank=True)
     STATUS = (
         ('draft', _('Draft')),
         ('in-review', _('Pending Review')),
@@ -118,17 +162,25 @@ class PageTranslation(models.Model):
     version = models.PositiveIntegerField(default=0)
     public = models.BooleanField(default=False)
     minor_edit = models.BooleanField(default=False)
-    creator = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)
     created_date = models.DateTimeField(default=timezone.now)
     last_updated = models.DateTimeField(auto_now=True)
 
     @property
+    def ancestor_path(self):
+        return '/'.join([
+            ancestor.page_translations.get(language=self.language).slug
+            for ancestor in self.page.get_ancestors()
+        ])
+
+    @property
     def permalink(self):
-        permalink = self.page.site.slug + '/'
-        permalink += self.language.code + '/'
-        for ancestor in self.page.get_ancestors(include_self=True):
-            permalink += ancestor.page_translations.get(language=self.language).slug + '/'
-        return permalink
+        return '{}/{}/{}/{}'.format(
+            self.page.site.slug, self.language.code, self.ancestor_path, self.slug
+        )
 
     def __str__(self):
-        return self.title
+        return '(id: {}, slug: {})'.format(self.id, self.slug)
+
+    class Meta:
+        default_permissions = ()

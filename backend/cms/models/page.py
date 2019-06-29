@@ -5,11 +5,11 @@ import logging
 
 from django.db import models
 from django.conf import settings
-from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+
 from mptt.models import MPTTModel, TreeForeignKey
 
 from .language import Language
@@ -132,6 +132,7 @@ class Page(MPTTModel):
             ('view_pages', 'Can view pages'),
             ('edit_pages', 'Can edit pages'),
             ('publish_pages', 'Can publish pages'),
+            ('grant_page_permissions', 'Can grant page permissions'),
         )
 
 
@@ -161,7 +162,7 @@ class PageTranslation(models.Model):
     version = models.PositiveIntegerField(default=0)
     public = models.BooleanField(default=False)
     minor_edit = models.BooleanField(default=False)
-    creator = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)
     created_date = models.DateTimeField(default=timezone.now)
     last_updated = models.DateTimeField(auto_now=True)
 

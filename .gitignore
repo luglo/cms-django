@@ -39,6 +39,7 @@ docs/_build/
 .idea
 .directory
 .directory
+cms-django.iml
 
 # Media Library
 backend/media/*
@@ -46,3 +47,5 @@ backend/media/*
 # XLIFF files folder
 **/xliffs/
 
+# Postgres folder
+.postgres

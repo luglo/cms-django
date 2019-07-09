@@ -14,7 +14,9 @@ cd cms-django
 You can run Postgres either on your local machine or in a Docker container.
 
 * Install Postgres on your machine ([Tutorial for Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-18-04))
-* Run Postgres in a Docker container: `./dev-tools/start_db_docker.sh`
+* Run Postgres in a Docker container: `./dev-tools/start_db_docker.sh` 
+  <br/> In this case, you should either change the port in the shell script or in `./backend/backend/settings.py`, 
+  as the standard ports are `5433` in `./dev-tools/start_db_docker.sh` and `5432` in `./backend/backend/settings.py`.
 
 ### virtualenv
 1. Run `./install-venv.sh`

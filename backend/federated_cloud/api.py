@@ -47,4 +47,7 @@ def region_data(request):
     } for region in regions]
     return JsonResponse(response_list, safe=False)
 
+def receive_offer(request):
+    pass
+
 # todo: prefix, name_without_prefix and aliases

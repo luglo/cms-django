@@ -4,6 +4,6 @@ from federated_cloud import api
 
 urlpatterns = [
     url(r'^cms-ids/', api.cms_ids),
-    url(r'^cms-data/(?P<cms_id>[0-9,a-f]+)/$', api.cms_data),
+    url(r'^cms-data/(?P<cms_id>[0-9,a-z]+)/$', api.cms_data),
     url(r'^region-data/', api.region_data),
 ]

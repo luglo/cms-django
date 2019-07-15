@@ -2,7 +2,7 @@ import json
 
 import requests
 
-from federated_cloud.models import CMSCache, SiteCache
+from federated_cloud.models import CMSCache, RegionCache
 
 
 def send_federated_cloud_request(domain, tail):
@@ -23,18 +23,18 @@ def ask_for_cms_data(domain, cms_id):
         name=response_dict["name"],
         domain=response_dict["domain"],
         public_key=response_dict["public_key"],
-        useSites=True,
+        useRegions=True,
         askForCMSs=True,
         shareWithOthers=True
     )
     response_cms.save()
 
 
-def ask_for_site_data(cms_cache):
-    response = send_federated_cloud_request(cms_cache.domain, "site-data")
+def ask_for_region_data(cms_cache):
+    response = send_federated_cloud_request(cms_cache.domain, "region-data")
     response_list = json.loads(response)
     for responseElement in response_list:
-        SiteCache(
+        RegionCache(
             parentCMS=cms_cache,
             path=responseElement["path"],
             postal_code=responseElement["postal_code"],

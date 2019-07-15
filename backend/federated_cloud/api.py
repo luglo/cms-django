@@ -30,21 +30,21 @@ def cms_data(request, cms_id):
     return JsonResponse(response_dict, safe=False)
 
 
-def site_data(request):
+def region_data(request):
     """
     :param request:
     :return: A JSON-response containing meta information of all regions of the cms
     """
-    sites = Site.objects.all()
+    regions = Site.objects.all()
     response_list = [{
-        "path": site.slug,
+        "path": region.slug,
         "aliases": "",
-        "latitude": site.latitude,
-        "longitude": site.longitude,
-        "postal_code": site.postal_code,
+        "latitude": region.latitude,
+        "longitude": region.longitude,
+        "postal_code": region.postal_code,
         "prefix": "",
-        "name_without_prefix": site.name,
-    } for site in sites]
+        "name_without_prefix": region.name,
+    } for region in regions]
     return JsonResponse(response_list, safe=False)
 
 # todo: prefix, name_without_prefix and aliases

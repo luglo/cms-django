@@ -6,12 +6,12 @@ class CMSCache(models.Model):
     name = models.CharField(max_length=50)
     domain = models.CharField(max_length=50)
     public_key = models.CharField(max_length=32)
-    useSites = models.BooleanField()
+    useRegions = models.BooleanField()
     askForCMSs = models.BooleanField()
     shareWithOthers = models.BooleanField()
 
 
-class SiteCache(models.Model):
+class RegionCache(models.Model):
     parentCMS = models.ForeignKey(CMSCache)
     path = models.CharField(max_length=60)
     postal_code = models.CharField(max_length=10)

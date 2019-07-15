@@ -5,6 +5,10 @@ from federated_cloud.models import CMSCache
 
 
 def cms_ids(request):
+    """
+    :param request:
+    :return: a JSON-response containing all region-ids in the cms
+    """
     response_list = [
         cmsCacheEntry.id for cmsCacheEntry in CMSCache.objects.filter(shareWithOthers=True)
     ]
@@ -12,6 +16,11 @@ def cms_ids(request):
 
 
 def cms_data(request, cms_id):
+    """
+    :param request:
+    :param cms_id: The id of the cms which data is requested
+    :return: a JSON-response containing name, domain and public key of the cms specified by cms_id
+    """
     response_cms = CMSCache.objects.get(id=cms_id)
     response_dict = {
         "name": response_cms.name,
@@ -22,6 +31,10 @@ def cms_data(request, cms_id):
 
 
 def site_data(request):
+    """
+    :param request:
+    :return: A JSON-response containing meta information of all regions of the cms
+    """
     sites = Site.objects.all()
     response_list = [{
         "path": site.slug,

@@ -8,7 +8,7 @@ from datetime import datetime, time, date
 from dateutil.rrule import weekday, rrule
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils import timezone
@@ -143,16 +143,27 @@ class Event(models.Model):
     def __str__(self):
         return self.event_translations.filter(event_id=self.id, language='de').first().title
 
-    def get_translations(self):
-        """Provides all translations of the Event
-        Returns:
-            [event_translations]: Array with all translations related to this event
-        """
+    @property
+    def languages(self):
+        event_translations = self.event_translations.prefetch_related('language').all()
+        languages = []
+        for event_translation in event_translations:
+            languages.append(event_translation.language)
+        return languages
 
-        return self.event_translations.all()
+    def get_translation(self, language_code):
+        """Provides a translation of the Event
+        Returns:
+            event_translation: Translation of this event
+        """
+        try:
+            event_translation = self.event_translations.get(language__code=language_code)
+        except ObjectDoesNotExist:
+            event_translation = None
+        return event_translation
 
     @classmethod
-    def get_list_view(cls, site_slug):
+    def get_list(cls, site_slug):
         """
         Function: Get List View
 
@@ -212,7 +223,7 @@ class Event(models.Model):
         permissions = (
             ('view_events', 'Can view events'),
             ('edit_events', 'Can edit events'),
-            ('publish_events', 'Can publish events'),
+            ('publish_events', 'Can publish events')
         )
 
 
@@ -232,23 +243,25 @@ class EventTranslation(models.Model):
     description = models.TextField()
     language = models.ForeignKey(
         Language,
+        related_name='event_translations',
         on_delete=models.CASCADE
     )
+    currently_in_translation = models.BooleanField(default=False)
     version = models.PositiveIntegerField(default=0)
     minor_edit = models.BooleanField(default=False)
     public = models.BooleanField(default=False)
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)
     created_date = models.DateTimeField(default=timezone.now)
     last_updated = models.DateTimeField(auto_now=True)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)
-
-    class Meta:
-        default_permissions = ()
 
     @property
     def permalink(self):
         return self.event.site.slug + '/' \
                + self.language.code + '/' \
-               + self.event.event_translations.get(language=self.language).slug + '/'
+               + self.slug + '/'
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        default_permissions = ()

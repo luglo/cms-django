@@ -1,47 +1,39 @@
 <tr class="border-t border-solid border-grey-lighter hover:bg-grey-lightest">
     <td>
-        <a href="{% url 'edit_event' event_translation_id=event.id %}" class="block py-3 px-2 text-grey-darkest">
-            {{ event.title }}
+        {{ event.id }}
+    </td>
+    <td>
+        <a href="{% url 'edit_event' event_id=event.id site_slug=site.slug language_code=language.code%}" class="block py-3 px-2 text-grey-darkest">
+            {{ event|event_translation_title:language }}
         </a>
     </td>
     <td>
         <div class="block py-3 px-2 text-grey-darkest">
             <div class="lang-grid">
-                <a href="">
-                    <i data-feather="plus" class="text-grey-darkest"></i>
-                </a>
-                <a href="">
-                    <i data-feather="edit-2" class="text-grey-darkest"></i>
-                </a>
-                <a href="">
-                    <i data-feather="edit-2" class="text-grey-darkest"></i>
-                </a>
-                <a href="">
-                    <i data-feather="plus" class="text-grey-darkest"></i>
-                </a>
+                {% for other_language in languages %}
+                    <a href="{% url 'edit_event' event_id=event.id site_slug=site.slug language_code=language.code%}">
+                        <i data-feather="{% if other_language in event.languages %}edit-2{% else %}plus{% endif %}" class="text-grey-darkest"></i>
+                    </a>
+                {% endfor %}
             </div>
         </div>
     </td>
     <td>
-        <a href="{% url 'edit_event' event_translation_id=event.id %}" class="block py-3 px-2 text-grey-darkest">
-            {{ event.location.name }}
-        </a>
+        {{ event.location|title:language }}
     </td>
     <td>
-        <a href="{% url 'edit_event' event_translation_id=event.id %}" class="block py-3 px-2 text-grey-darkest">
-            {{ event.date|date:'d.m.Y'}}, {{ event.date|time:'H:i' }} Uhr
-        </a>
+        {{ event.date|date:'d.m.Y'}}, {{ event.date|time:'H:i' }}
     </td>
     <td class="pl-2 pr-4">
         <!-- TODO: add link to view event in web app -->
         <a href="" class="py-3" style="padding-right:4px;">
             <i data-feather="eye" class="text-grey-darkest"></i>
         </a>
-        <a href="{% url 'edit_event' event_translation_id=event.id %}" class="py-3"
+        <a href="{% url 'edit_event' event_id=event.id site_slug=site.slug language_code=language.code %}" class="py-3"
            style="padding-left:4px;padding-right:4px;">
             <i data-feather="edit" class="text-grey-darkest"></i>
         </a>
-        <a href="{% url 'delete_event' event_translation_id=event.id %}" class="py-3"
+        <a href="{% url 'delete_event' event_id=event.id site_slug=site.slug language_code=language.code %}" class="py-3"
            style="padding-left:4px;padding-right:4px;">
             <i data-feather="trash-2" class="text-grey-darkest"></i>
         </a>

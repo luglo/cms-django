@@ -1,53 +1,50 @@
 {% extends "_base.html" %}
+{% load i18n %}
+{% load static %}
+
 {% block content %}
-    {% load static %}
     <div class="table-header">
         <div class="flex flex-wrap">
             <div class="w-1/2">
-                <h2 class="heading font-normal mb-2">Veranstaltungen</h2>
+                <h2 class="heading font-normal mb-2">{% trans 'Events' %}</h2>
             </div>
         </div>
         <div class="flex flex-wrap">
             <form class="table-search relative w-1/2">
                 <i data-feather="search" class="absolute"></i>
-                <input type="search" placeholder="Suche" class="h-full pl-10 pr-4 rounded shadow">
+                <input type="search" placeholder="{% trans Search %}" class="h-full pl-10 pr-4 rounded shadow">
             </form>
+            {% if site.default_language == language %}
             <div class="w-1/2 flex flex-wrap justify-end">
                 <a href="{% url 'new_event' site_slug=site.slug language_code=language.code %}"
                    class="bg-grey-dark hover:bg-integreat hover:text-grey-darkest text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    Event erstellen
+                    {% trans 'Create event' %}
                 </a>
             </div>
+            {% endif %}
         </div>
     </div>
     <div class="table-listing">
         <table class="w-full mt-4 rounded border border-solid border-grey-light shadow bg-white">
             <thead>
             <tr class="border-b border-solid border-grey-light">
-                <th class="text-sm text-left uppercase py-3 px-2">Titel</th>
+                <th class="text-sm text-left uppercase py-3 px-2">{% trans 'ID' %}</th>
+                <th class="text-sm text-left uppercase py-3 px-2">{% trans 'Title' %}</th>
                 <th class="text-sm text-left uppercase py-3 px-2">
                     <div class="lang-grid flags">
-                        <a href="">
-                            <img src="{% static 'images/flags/ar-ma.png' %}" title="Arabisch"/>
-                        </a>
-                        <a href="">
-                            <img src="{% static 'images/flags/de-de.png' %}" title="Deutsch"/>
-                        </a>
-                        <a href="">
-                            <img src="{% static 'images/flags/en-gb.png' %}" title="Englisch"/>
-                        </a>
-                        <a href="">
-                            <img src="{% static 'images/flags/fa-ir.png' %}" title="Farsi"/>
-                        </a>
+                        {% for lang in languages %}
+		                    <a href="{% url 'events' site_slug=site.slug language_code=lang.code %}">
+			                    <img src="{% static '' %}images/flags/{{ lang.code }}.png" title="{{ lang.name }}" />
+		                    </a>
+	                    {% endfor %}
                     </div>
                 </th>
-                <th class="text-sm text-left uppercase py-3 px-2">Veranstaltungsort</th>
-                <th class="text-sm text-left uppercase py-3 px-2">Datum und Uhrzeit</th>
-                <th class="text-sm text-left uppercase py-3 pl-2 pr-4">Optionen</th>
+                <th class="text-sm text-left uppercase py-3 px-2">{% trans 'Event location' %}</th>
+                <th class="text-sm text-left uppercase py-3 px-2">{% trans 'Date and time' %}</th>
+                <th class="text-sm text-left uppercase py-3 pl-2 pr-4">{% trans 'Options' %}</th>
             </tr>
             </thead>
             <tbody>
-            <!-- TODO: Listenelemente formatieren -->
             {% if events %}
                 {% for event in events %}
                     {% include "events/list_row.html" %}
@@ -56,7 +53,7 @@
                 <tr>
                     <td></td>
                     <td colspan="5" class="px-2 py-3">
-                        Noch keine Veranstaltungen vorhanden.
+                        {% trans 'No events available yet.' %}
                     </td>
                 </tr>
             {% endif %}

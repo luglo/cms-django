@@ -1,11 +1,12 @@
 """Provides routing to all submodules inside the application
 """
+from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
-from django.conf import settings
 from django.contrib.auth import views as auth_views
 
-from .views import general, registration, pages, events, regions, languages, language_tree, users, roles, organizations, statistics, push_notifications, media, analytics
+from .views import general, registration, pages, events, regions, languages, language_tree, users, \
+    roles, organizations, statistics, push_notifications, media, analytics
 
 urlpatterns = [
     url(r'^$', general.RedirectView.as_view(), name='redirect'),
@@ -180,6 +181,7 @@ urlpatterns = [
                 url(r'^archive$', pages.ArchivedPagesView.as_view(), name='archived_pages'),
             ])),
         ])),
+        # TODO: Change destination for delete_event, add view_event
         url(r'^events/', include([
             url(r'^$', events.EventListView.as_view(), name='events'),
             url(r'^(?P<language_code>[-\w]+)/', include([

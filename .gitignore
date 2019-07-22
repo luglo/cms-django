@@ -50,3 +50,6 @@ backend/media/*
 
 # Postgres folder
 .postgres
+
+# Config stuff:
+backend/federated_cloud/fed_cloud_config.json

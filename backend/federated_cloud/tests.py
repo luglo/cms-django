@@ -1,9 +1,19 @@
+from django.http import HttpResponse
+
+from federated_cloud.settings import *
 from federated_cloud.share_requests import send_offer
 
 
 def test(request):
-    #print(ask_for_cms_data("localhost:8000", "asdf"))
-    #print(ask_for_cms_ids("localhost:8000"))
-    send_offer()
-    from django.http import HttpResponse
+    print(get_id())
+
+
+    print(get_name())
+
+
+    print(get_domain())
+
+    print(get_public_key())
+
+    print(get_private_key())
     return HttpResponse("asdf")

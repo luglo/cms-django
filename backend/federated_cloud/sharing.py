@@ -4,6 +4,7 @@ from django.http import JsonResponse, HttpResponse, HttpRequest
 
 from cms.models import Site
 from federated_cloud.models import CMSCache
+from federated_cloud.tools import derive_id_from_public_key
 
 
 def cms_ids(request: HttpRequest):
@@ -53,7 +54,7 @@ def region_data(request: HttpRequest):
 def receive_offer(request: HttpRequest):
     public_key: str = request.GET["public_key"]
     cms_new = CMSCache(
-        id=hashlib.sha256(public_key.encode()).hexdigest(),
+        id=derive_id_from_public_key(public_key),
         name=request.GET["name"],
         domain=request.GET["domain"],
         public_key=public_key

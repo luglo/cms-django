@@ -3,19 +3,19 @@ import hashlib
 import requests
 
 
-def derive_id_from_public_key(public_key: bytes) -> str:
-    return bytes_to_string(hashlib.sha256(public_key))
+def derive_id_from_public_key(public_key: str) -> str:
+    return hashlib.sha256(string_to_bytes(public_key)).hexdigest()
 
 
 def send_federated_cloud_request(domain: str, tail: str) -> str:
     return requests.get("http://" + domain + "/federated-cloud/" + tail).text
 
 
-def sign_message(message: str, private_sign_key: bytes) -> str:
+def sign_message(message: str, private_key: str) -> str:
     pass
 
 
-def check_signature(message: str, signature: str, public_sign_key: bytes) -> bool:
+def check_signature(message: str, signature: str, public_key: str) -> bool:
     pass
 
 

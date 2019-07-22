@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse, HttpRequest
 
 from cms.models import Site
 from federated_cloud.models import CMSCache
@@ -47,7 +47,14 @@ def region_data(request):
     } for region in regions]
     return JsonResponse(response_list, safe=False)
 
-def receive_offer(request):
-    pass
 
+def receive_offer(request: HttpRequest):
+    cms_new = CMSCache(
+        id=cms_id,
+        name=request.GET["name"],
+        domain=request.GET["domain"],
+        public_key=request.GET["public_key"],
+    )
+    cms_new.save()
+    return HttpResponse()
 # todo: prefix, name_without_prefix and aliases

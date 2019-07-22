@@ -6,9 +6,9 @@ class CMSCache(models.Model):
     name = models.CharField(max_length=50)
     domain = models.CharField(max_length=50)
     public_key = models.CharField(max_length=32)
-    useRegions = models.BooleanField()
-    askForCMSs = models.BooleanField()
-    shareWithOthers = models.BooleanField()
+    useRegions = models.BooleanField(default=False)
+    askForCMSs = models.BooleanField(default=True)
+    shareWithOthers = models.BooleanField(default=True)
 
 
 class RegionCache(models.Model):

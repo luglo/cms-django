@@ -37,7 +37,7 @@ def ask_for_region_data(cms_cache):
         ).save()
 
 
-def send_offer():
-    pass
+def send_offer(domain: str):
+    send_federated_cloud_request(domain, "offer", {"name": "asdf", "domain": "", "public_key": ""})
 
 # todo error-handling

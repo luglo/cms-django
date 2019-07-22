@@ -7,8 +7,8 @@ def derive_id_from_public_key(public_key: str) -> str:
     return hashlib.sha256(string_to_bytes(public_key)).hexdigest()
 
 
-def send_federated_cloud_request(domain: str, tail: str) -> str:
-    return requests.get("http://" + domain + "/federated-cloud/" + tail).text
+def send_federated_cloud_request(domain: str, tail: str, params=None) -> str:
+    return requests.get("http://" + domain + "/federated-cloud/" + tail, params).text
 
 
 def sign_message(message: str, private_key: str) -> str:

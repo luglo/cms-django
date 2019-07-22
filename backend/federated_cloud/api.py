@@ -1,3 +1,5 @@
+import hashlib
+
 from django.http import JsonResponse, HttpResponse, HttpRequest
 
 from cms.models import Site
@@ -49,11 +51,12 @@ def region_data(request):
 
 
 def receive_offer(request: HttpRequest):
+    public_key: str = request.GET["public_key"]
     cms_new = CMSCache(
-        id=cms_id,
+        id=hashlib.sha256(public_key.encode()).hexdigest(),
         name=request.GET["name"],
         domain=request.GET["domain"],
-        public_key=request.GET["public_key"],
+        public_key=public_key
     )
     cms_new.save()
     return HttpResponse()

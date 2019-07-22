@@ -6,7 +6,7 @@ from cms.models import Site
 from federated_cloud.models import CMSCache
 
 
-def cms_ids(request):
+def cms_ids(request: HttpRequest):
     """
     :param request:
     :return: a JSON-response containing all region-ids in the cms
@@ -17,7 +17,7 @@ def cms_ids(request):
     return JsonResponse(response_list, safe=False)
 
 
-def cms_data(request, cms_id):
+def cms_data(request: HttpRequest, cms_id: str):
     """
     :param request:
     :param cms_id: The id of the cms which data is requested
@@ -32,7 +32,7 @@ def cms_data(request, cms_id):
     return JsonResponse(response_dict, safe=False)
 
 
-def region_data(request):
+def region_data(request: HttpRequest):
     """
     :param request:
     :return: A JSON-response containing meta information of all regions of the cms

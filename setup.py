@@ -34,6 +34,7 @@ setup(
         "django-filer==1.5.0",
         "beautifulsoup4==4.7.1",
         "lxml==4.3.3",
+        "pycryptodome==3.8.2"
     ],
     author="Integreat App Project",
     author_email="info@integreat-app.de",

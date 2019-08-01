@@ -3,7 +3,7 @@ import json
 
 from cms.models import Configuration
 from federated_cloud.models import CMSCache
-from federated_cloud.tools import derive_id_from_public_key, gen_key_pair_strings, bytes_to_string
+from federated_cloud.tools import derive_id_from_public_key, gen_key_pair_strings
 
 config_file_path = "backend/federated_cloud/fed_cloud_config.json"
 

@@ -1,24 +1,32 @@
 import os
 import json
 
+from cms.models import Configuration
 from federated_cloud.models import CMSCache
-from federated_cloud.tools import derive_id_from_public_key, bytes_to_string
+from federated_cloud.tools import derive_id_from_public_key, gen_key_pair_strings, bytes_to_string
 
 config_file_path = "backend/federated_cloud/fed_cloud_config.json"
 
 
 def activate_federated_cloud_feature(name: str, domain: str):
-    public_key = os.urandom(32)  # todo: Generate key-pair properly
-    private_key = os.urandom(64)
-    id = derive_id_from_public_key(bytes_to_string(public_key))
-    with open(config_file_path, 'w') as file:
-        file.write(json.dumps({
-            "id": id,
-            "name": name,
-            "domain": domain,
-            "private_key": bytes_to_string(private_key),
-            "public_key": bytes_to_string(public_key)
-        }))
+    private_key, public_key = gen_key_pair_strings()
+    Configuration(
+        key="federated_cloud_name",
+        value=name
+    ).save()
+    Configuration(
+        key="federated_cloud_domain",
+        value=domain
+    ).save()
+    # todo: are name and domain already saved in other location?
+    Configuration(
+        key="federated_cloud_public_key",
+        value=public_key
+    ).save()
+    Configuration(
+        key="federated_cloud_private_key",
+        value=private_key
+    ).save()
 
 
 def add_cms(name: str, domain: str, public_key: str, useRegions: bool, askForCMSs: bool, shareWithOthers: bool):
@@ -43,27 +51,17 @@ def update_cms_settings(cms_id: str, useRegion_new: str, askForCMSs_new: str, sh
 
 
 def get_id():
-    with open(config_file_path, 'r') as file:
-        return json.loads(file.readline())["id"]
-
+    public_key = get_public_key()
+    return derive_id_from_public_key(public_key)
 
 def get_name():
-    with open(config_file_path, 'r') as file:
-        return json.loads(file.readline())["name"]
-
+    return Configuration.objects.get(key="federated_cloud_name").value
 
 def get_domain():
-    with open(config_file_path, 'r') as file:
-        return json.loads(file.readline())["domain"]
-
+    return Configuration.objects.get(key="federated_cloud_domain").value
 
 def get_public_key():
-    with open(config_file_path, 'r') as file:
-        return json.loads(file.readline())["private_key"]
-
+    return Configuration.objects.get(key="federated_cloud_public_key").value
 
 def get_private_key():
-    with open(config_file_path, 'r') as file:
-        return json.loads(file.readline())["public_key"]
-#todo: better way to read config-file
-
+    return Configuration.objects.get(key="federated_cloud_private_key").value

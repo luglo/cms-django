@@ -27,7 +27,7 @@ setup(
         "idna==2.6",
         "lxml==4.3.3",
         "psycopg2-binary==2.8.3",
-        "pycryptodome==3.8.2"
+        "pycryptodome==3.8.2",
         "pylint==2.3.1",
         "pylint-django==2.0.11",
         "pylint_runner==0.5.4",

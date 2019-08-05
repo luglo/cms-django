@@ -1,15 +1,22 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render, redirect
+from django.utils.decorators import method_decorator
+from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView
 
+from ...decorators import region_permission_required
 from ...models import Language, Site, Event
 
 
-class EventListView(LoginRequiredMixin, TemplateView):
-    base_context = {'current_menu_item': 'events'}
+@method_decorator(region_permission_required, name='dispatch')
+class EventListView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+    permission_required = 'cms.view_events'
+    raise_exception = True
+
     model = Event
     template_name = 'events/list_events.html'
+    base_context = {'current_menu_item': 'events'}
 
     def get(self, request, *args, **kwargs):
         # current site
@@ -33,7 +40,7 @@ class EventListView(LoginRequiredMixin, TemplateView):
             return redirect('language_tree', **{'site_slug': site_slug})
 
         # all events of the current site in the current language
-        events = Event.get_list_view(site_slug)
+        events = Event.get_list(site_slug)
 
         # all other languages of current site
         languages = site.languages

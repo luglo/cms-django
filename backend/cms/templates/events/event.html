@@ -1,71 +1,111 @@
 {% extends "_base.html" %}
+{% load i18n %}
 
 {% block content %}
     {% load widget_tweaks %}
+    {% load static %}
+    {% load rules %}
     <form method="post">
         {% csrf_token %}
         <div class="flex flex-wrap mb-4">
             <div class="w-2/5 flex flex-wrap flex-col justify-center">
                 <h2 class="heading font-normal">
-                    Neues Event erstellen
+                    {% if event %}
+                        {% if event_translation_form.instance.id %}
+                            {% with event_translation_form.instance.title as event_title %}
+                            {% blocktrans %} Edit event "{{ event_title }}"{% endblocktrans %}
+                            {% endwith %}
+                        {% else %}
+                            {% trans 'Create new translation' %}
+                        {% endif %}
+                    {% else %}
+                        {% trans 'Create new event' %}
+                    {% endif %}
                 </h2>
             </div>
             <div class="w-3/5 flex justify-end">
-                <input type="submit" name="submit_save"
-                       class="cursor-pointer bg-grey hover:bg-grey-dark text-white font-bold py-3 px-4 rounded mr-2"
-                       value="Speichern"/>
-                <input type="submit" name="submit_publish"
-                       class="cursor-pointer bg-blue hover:bg-blue-dark text-white font-bold py-3 px-4 rounded"
-                       value="Veröffentlichen"/>
+                {% has_perm 'cms.edit_event' request.user event as can_edit_event %}
+                {% if can_edit_event %}
+                    <input type="submit" name="submit_save"
+                           class="cursor-pointer bg-grey hover:bg-grey-dark text-white font-bold py-3 px-4 rounded mr-2"
+                           value="{% trans 'Save' %}" />
+                {% endif %}
+                {% has_perm 'cms.publish_event' request.user event as can_publish_event %}
+                {% if can_publish_event %}
+                    <input type="submit" name="submit_publish"
+                           class="cursor-pointer bg-blue hover:bg-blue-dark text-white font-bold py-3 px-4 rounded"
+                           value="{% trans 'Publish' %}" />
+                {% endif %}
             </div>
         </div>
 
         <div class="flex flex-wrap">
             <div class="w-2/3 pr-2">
                 {{ event_form.errors }}
+                {{ event_translation_form.errors }}
                 <div class="w-full p-4 mb-4 rounded border border-solid border-grey-light shadow bg-white">
-                    {% render_field event_form.title placeholder="Titel hier eingeben" class="appearance-none block w-full bg-grey-lighter text-xl text-grey-darkest border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
+                    <label class="block mb-2 font-bold">{% trans 'Title' %}</label>
+                    {% trans 'Insert title here' as title_placeholder %}
+                    {% render_field event_translation_form.title placeholder=title_placeholder class="appearance-none block w-full bg-grey-lighter text-xl text-grey-darkest border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
                     <div class="mt-4">
-                        <!--{% render_field event_form.text placeholder="Text" class="tinymce_textarea" %}-->
-                        {% render_field event_form.description placeholder="Beschreibung" class="bg-grey-lighter w-full p-2" %}
+                        <label class="block mb-2 font-bold">{% trans 'Description' %}</label>
+                        {% trans 'Insert description here' as description_placeholder %}
+                        {% render_field event_translation_form.description placeholder=description_placeholder class="bg-grey-lighter w-full p-2" %}
+                    </div>
+                </div>
+                <div class="w-full p-4 mb-4 rounded border border-solid border-grey-light shadow bg-white">
+                    <label class="block mb-2 font-bold">{% trans 'Permalink' %}</label>
+                    <div class="appearance-none block w-full bg-grey-lighter text-xl text-grey-darkest border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey">
+                        {% trans ' Leave blank to generate unique permalink from title' as slug_placeholder%}
+                        {% spaceless %}
+                            <div style="display: table; white-space: nowrap;">
+                                <span style="display: table-cell;">https://integreat.app/{{ site.slug }}/{{ language.code }}/</span>
+                                <span style="display: table-cell; width: 100%;">{% render_field event_translation_form.slug placeholder=slug_placeholder class="w-full rounded" %}</span>
+                            </div>
+                        {% endspaceless %}
                     </div>
                 </div>
                 <div class="flex flex-wrap mt-3">
                     <div class="w-full md:w-1/2 md:pr-2">
                         <div class="w-full p-4 mt-2 rounded border border-solid border-grey-light shadow bg-white">
-                            <h3 class="font-bold mb-3">Wann</h3>
-                            <label class="mb-2 block font-bold uppercase text-sm">Datum</label>
+                            <h3 class="font-bold mb-3">{% trans 'Date and time' %}</h3>
+                            <label class="mb-2 block font-bold text-sm">{% trans 'Date' %}</label>
                             <div class="flex flex-wrap">
                                 <div class="w-1/2 pr-2">
-                                    {% render_field event_form.start_date placeholder=event_form.start_date.label class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
+                                    {% trans 'Start (date)' as start_date_placeholder %}
+                                    {% render_field event_form.start_date placeholder=start_date_placeholder class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
                                 </div>
                                 <div class="w-1/2 pr-2">
-                                   {% render_field event_form.end_date placeholder=event_form.end_date.label class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
+                                    {% trans 'End (date)' as end_date_placeholder %}
+                                    {% render_field event_form.end_date placeholder=end_date_placeholder class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
                                 </div>
                             </div>
-                            <label class="mt-4 mb-2 block font-bold uppercase text-sm">Uhrzeit</label>
+                            <label class="mt-4 mb-2 block font-bold text-sm">{% trans 'Time' %}</label>
                             <div class="flex flex-wrap mb-3">
                                 <div class="w-1/2 pr-2">
-                                    {% render_field event_form.start_time placeholder=event_form.start_time.label class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
+                                    {% trans 'Start (time)' as start_time_placeholder %}
+                                    {% render_field event_form.start_time placeholder=start_time_placeholder class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
                                 </div>
                                 <div class="w-1/2 pr-2">
-                                    {% render_field event_form.end_time placeholder=event_form.end_time.label class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
+                                    {% trans 'End (time)' as end_time_placeholder %}
+                                    {% render_field event_form.end_time placeholder=end_time_placeholder class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
                                 </div>
                             </div>
                             <!-- TODO: Don't show or deactivate time fields if is_all_day is true -->
                             <div class="checkbox-wrap relative mt-2 pl-5" style="padding-top:2px;padding-bottom:2px;padding-left:0;">
-                                {% render_field event_form.is_all_day %} {{ event_form.is_all_day.label }}
+                                {% render_field event_form.is_all_day %} {% trans 'All-day' %}
                             </div>
-                            <label class="mt-4 mb-2 block font-bold uppercase text-sm">Wiederholung</label>
+                            <label class="mt-4 mb-2 block font-bold text-sm">{% trans 'Recurrence' %}</label>
                             <div class="checkbox-wrap relative mt-2 pl-5" style="padding-top:2px;padding-bottom:2px;padding-left: 0">
-                                    {% render_field event_form.is_recurring %} {{ event_form.is_recurring.label }}
+                                    {% render_field event_form.is_recurring %} {% trans 'Recurring' %}
                             </div>
                             <!-- TODO: Add fields for recurrence options, make options dynamic -->
                             <div class="checkbox-wrap relative mt-2 pl-5" style="padding-top:2px;padding-bottom:2px;padding-left:0;">
-                                {% render_field event_form.has_recurrence_end_date %} {{ event_form.has_recurrence_end_date.label }}
+                                {% render_field event_form.has_recurrence_end_date %} {% trans 'Recurrence ends' %}
                             </div>
                         </div>
                     </div>
+                    <!-- TODO: POIs -->
                     <div class="w-full md:w-1/2 md:pl-2">
                         <div class="w-full p-4 mt-2 rounded border border-solid border-grey-light shadow bg-white">
                             <h3 class="font-bold mb-3">Wo</h3>
@@ -108,106 +148,66 @@
             <div class="w-1/3 pl-2">
                 <div class="w-full px-4 py-2 rounded border border-solid border-grey-light shadow bg-white">
                     <div class="py-2 border-b solid border-grey-lighter mb-2">
-                        <span class="block mb-2 font-bold">Sprache</span>
-                        <label class="text-xs uppercase block">Aktuelle Sprache</label>
+                        <span class="block mb-2 font-bold">{% trans 'Language' %}</span>
+                        <label class="text-xs uppercase block">{% trans 'Current language' %}</label>
                         <div class="relative my-2">
-                            {% render_field event_form.language id="parent" class="block appearance-none w-full bg-grey-lighter border border-grey-lighter text-grey-darkest py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
-                            <div class="pointer-events-none absolute pin-y pin-r flex items-center px-2 text-grey-darkest">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                     viewBox="0 0 20 20">
-                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
-                                </svg>
+                            {{ language.name }}
+                        </div>
+                        {% if event %}
+                            <div class="entity-lang-list mt-4 mb-2">
+                                <label class="text-xs uppercase block mb-2">{% trans 'Translations' %}</label>
+                                <!-- TODO: get available languages from site settings -->
+                                <table style="width:100%;" border="0" cellspacing="0" cellpadding="0">
+                                    {% for other_language in languages %}
+                                        {% if other_language != language %}
+                                            <tr>
+                                                <td>
+                                                    <a href="{% url 'edit_event' event_id=event.id site_slug=site.slug language_code=other_language.code %}" class="text-black block p-2">
+                                                        {{ other_language.name }}
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a href="{% url 'edit_event' event_id=event.id site_slug=site.slug language_code=other_language.code %}" class="text-black block p-2 relative">
+                                                        <i data-feather="{% if other_language in event.languages %}edit-2{% else %}plus{% endif %}"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </table>
                             </div>
-                        </div>
-                        <div class="entity-lang-list mt-4 mb-2">
-                            <label class="text-xs uppercase block mb-2">Übersetzungen</label>
-                            <!-- TODO: get available languages from site settings -->
-                            <table width="100%%" border="0" cellspacing="0" cellpadding="0">
-                                <tr>
-                                    <td>
-                                        <a href="" class="text-black block p-2">
-                                            Arabisch
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="" class="text-black block p-2 relative">
-                                            <i data-feather="edit-2"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <a href="" class="text-black block p-2">
-                                            Englisch
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="" class="text-black block p-2 relative">
-                                            <i data-feather="edit-2"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <a href="" class="text-black block p-2">
-                                            Farsi
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="" class="text-black block p-2 relative">
-                                            <i data-feather="plus"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <a href="" class="text-black block p-2">
-                                            Französisch
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="" class="text-black block p-2 relative">
-                                            <i data-feather="plus"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <a href="" class="text-black block p-2">
-                                            Türkisch
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="" class="text-black block p-2 relative">
-                                            <i data-feather="plus"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            </table>
+                        {% endif %}
+                    </div>
+                    {% has_perm 'cms.publish_event' request.user event as can_publish_event %}
+                {% if can_publish_event %}
+                <div class="py-2 border-b solid border-grey-lighter mb-2">
+                    <label for="public" class="font-bold">{% trans 'Visibility' %}</label>
+                    <div class="relative my-2">
+                        {% render_field event_translation_form.public id="public" class="block appearance-none w-full bg-grey-lighter border border-grey-lighter text-grey-darkest py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
+                        <div class="pointer-events-none absolute pin-y pin-r flex items-center px-2 text-grey-darkest">
+                            <img src="{% static 'svg/select-down-arrow.svg' %}" class="fill-current h-4 w-4" />
                         </div>
                     </div>
-                    <div class="py-2 border-b solid border-grey-lighter mb-2">
-                        <label for="status" class="font-bold">Status</label>
-                        <div class="relative my-2">
-                            {% render_field event_form.status id="status" class="block appearance-none w-full bg-grey-lighter border border-grey-lighter text-grey-darkest py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
-                            <div class="pointer-events-none absolute pin-y pin-r flex items-center px-2 text-grey-darkest">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                     viewBox="0 0 20 20">
-                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
-                                </svg>
-                            </div>
+                </div>
+                {% endif %}
+                <div class="py-2 border-b solid border-grey-lighter mb-2">
+                    <label for="status" class="font-bold">{% trans 'Status' %}</label>
+                    <div class="relative my-2">
+                        {% render_field event_translation_form.status id="status" class="block appearance-none w-full bg-grey-lighter border border-grey-lighter text-grey-darkest py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
+                        <div class="pointer-events-none absolute pin-y pin-r flex items-center px-2 text-grey-darkest">
+                            <img src="{% static 'svg/select-down-arrow.svg' %}" class="fill-current h-4 w-4" />
                         </div>
                     </div>
-                    <div class="pt-2 pb-4">
-                        <span class="block font-bold mb-4">Beitragsbild</span>
-                        {% render_field event_form.picture id="picture" class="image-field" %}
-                        <label for="icon"
-                               class="font-bold my-2 bg-blue hover:bg-blue-dark focus:bg-blue-dark text-white font-bold py-2 pl-10 pr-4 rounded cursor-pointer relative">
-                            <i data-feather="upload"></i>
-                            <span class="standard_text">Beitragsbild festlegen</span>
-                            <span class="filename"></span>
-                        </label>
-                    </div>
+                </div>
+                <div class="pt-2 pb-4">
+                    <span class="block font-bold mb-4">{% trans 'Event picture' %}</span>
+                    {% render_field event_form.picture id="picture" class="image-field" %}
+                    <label for="icon" class="font-bold my-2 bg-blue hover:bg-blue-dark focus:bg-blue-dark text-white font-bold py-2 pl-10 pr-4 rounded cursor-pointer relative">
+                        <i data-feather="upload"></i>
+                        <span class="standard_text">{% trans 'Set event picture' %}</span>
+                        <span class="filename"></span>
+                    </label>
+                </div>
                 </div>
             </div>
         </div>

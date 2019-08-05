@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load static %}
 
+
 {% block content %}
     <div class="table-header">
         <div class="flex flex-wrap">
@@ -47,7 +48,7 @@
             <tbody>
             {% if events %}
                 {% for event in events %}
-                    {% include "events/list_row.html" %}
+                    {% include "events/list_row.html" with event=event %}
                 {% endfor %}
             {% else %}
                 <tr>

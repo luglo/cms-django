@@ -1,3 +1,4 @@
+{% load event_filters %}
 <tr class="border-t border-solid border-grey-lighter hover:bg-grey-lightest">
     <td>
         {{ event.id }}
@@ -11,7 +12,7 @@
         <div class="block py-3 px-2 text-grey-darkest">
             <div class="lang-grid">
                 {% for other_language in languages %}
-                    <a href="{% url 'edit_event' event_id=event.id site_slug=site.slug language_code=language.code%}">
+                    <a href="{% url 'edit_event' event_id=event.id site_slug=site.slug language_code=other_language.code%}">
                         <i data-feather="{% if other_language in event.languages %}edit-2{% else %}plus{% endif %}" class="text-grey-darkest"></i>
                     </a>
                 {% endfor %}
@@ -19,7 +20,8 @@
         </div>
     </td>
     <td>
-        {{ event.location|title:language }}
+        <!-- TODO: filter location for title in correct language, e.g. event.location|poi_translation_title:language -->
+        {{ event.location|title }}
     </td>
     <td>
         {{ event.date|date:'d.m.Y'}}, {{ event.date|time:'H:i' }}

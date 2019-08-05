@@ -1,5 +1,6 @@
 import json
 from federated_cloud.models import CMSCache, RegionCache
+from federated_cloud.settings import get_name, get_domain, get_public_key
 from federated_cloud.tools import send_federated_cloud_request
 
 
@@ -38,6 +39,6 @@ def ask_for_region_data(cms_cache):
 
 
 def send_offer(domain: str):
-    send_federated_cloud_request(domain, "offer", {"name": "asdf", "domain": "", "public_key": ""})
+    send_federated_cloud_request(domain, "offer", {"name": get_name(), "domain": get_domain(), "public_key": get_public_key()})
 
 # todo error-handling

@@ -51,8 +51,7 @@ def update_cms_settings(cms_id: str, useRegion_new: str, askForCMSs_new: str, sh
 
 
 def get_id():
-    public_key = get_public_key()
-    return derive_id_from_public_key(public_key)
+    return derive_id_from_public_key(get_public_key())
 
 def get_name():
     return Configuration.objects.get(key="federated_cloud_name").value

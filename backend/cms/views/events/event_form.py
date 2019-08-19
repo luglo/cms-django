@@ -40,7 +40,7 @@ class EventForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         # pop kwargs to prevent error when calling super class
-        self.site = kwargs.pop('site', None)
+        self.region = kwargs.pop('region', None)
         language = kwargs.pop('language', None)
         instance = kwargs.get('instance')
         if instance is not None:
@@ -65,7 +65,7 @@ class EventForm(forms.ModelForm):
 
         if self.instance.id is None:
             # set initial values on event creation
-            event.site = self.site
+            event.region = self.region
 
         event.start_date = self.cleaned_data['start_date']
         event.end_date = self.cleaned_data['end_date']
@@ -91,7 +91,7 @@ class EventForm(forms.ModelForm):
 
         return event
 
-    # def save_event(self, site_slug, language_code, event_id=None, publish=False):
+    # def save_event(self, region_slug, language_code, event_id=None, publish=False):
     #     """
     #     Function to create or update an event
     #
@@ -146,7 +146,7 @@ class EventForm(forms.ModelForm):
     #     else:
     #         # event doesn't exist yet, create new event
     #         event = Event.objects.create(
-    #             site=Site.objects.get(slug=site_slug)
+    #             region=Region.objects.get(slug=region_slug)
     #         )
     #
     #     if event_translation is None:
@@ -211,7 +211,7 @@ class EventTranslationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         # pop kwargs to prevent error when calling super class
-        self.site = kwargs.pop('site', None)
+        self.region = kwargs.pop('region', None)
         self.language = kwargs.pop('language', None)
 
         # to set the public value through the submit button, we have to overwrite the field value
@@ -271,7 +271,7 @@ class EventTranslationForm(forms.ModelForm):
         while True:
             # add counter to the end of the slug and increment counter until unique slug was found
             other_event_translation = EventTranslation.objects.filter(
-                event__site=self.site,
+                event__region=self.region,
                 language=self.language,
                 slug=unique_slug
             ).exclude(id=self.instance.id)

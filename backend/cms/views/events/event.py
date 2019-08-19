@@ -7,7 +7,7 @@ from django.views.generic import TemplateView
 
 from .event_form import EventForm, EventTranslationForm
 from ...decorators import region_permission_required
-from ...models import Site, Language, Event, EventTranslation
+from ...models import Region, Language, Event, EventTranslation
 
 
 @method_decorator(region_permission_required, name='dispatch')
@@ -19,7 +19,7 @@ class EventView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
     base_context = {'current_menu_item': 'events'}
 
     def get(self, request, *args, **kwargs):
-        site = Site.objects.get(slug=kwargs.get('site_slug'))
+        region = Region.objects.get(slug=kwargs.get('region_slug'))
         language = Language.objects.get(code=kwargs.get('language_code'))
 
         # get event and event translation objects if they exist, otherwise objects are None
@@ -31,7 +31,7 @@ class EventView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
 
         event_form = EventForm(
             instance=event,
-            site=site,
+            region=region,
             language=language
         )
         event_translation_form = EventTranslationForm(
@@ -51,12 +51,12 @@ class EventView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
             'event_translation_form': event_translation_form,
             'event': event,
             'language': language,
-            'languages': site.languages,
+            'languages': region.languages,
             **self.base_context
         })
 
     def post(self, request, *args, **kwargs):
-        site = Site.objects.get(slug=kwargs.get('site_slug'))
+        region = Region.objects.get(slug=kwargs.get('region_slug'))
         language = Language.objects.get(code=kwargs.get('language_code'))
 
         event_instance = Event.objects.filter(id=kwargs.get('event_id')).first()
@@ -68,13 +68,13 @@ class EventView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
         event_form = EventForm(
             request.POST,
             instance=event_instance,
-            site=site,
+            region=region,
             language=language,
         )
         event_translation_form = EventTranslationForm(
             request.POST,
             instance=event_translation_instance,
-            site=site,
+            region=region,
             language=language
         )
         # TODO: error handling
@@ -112,7 +112,7 @@ class EventView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
 
             return redirect('edit_event', **{
                 'event_id': event.id,
-                'site_slug': site.slug,
+                'region_slug': region.slug,
                 'language_code': language.code,
             })
 
@@ -124,5 +124,5 @@ class EventView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
             'event_translation_form': event_translation_form,
             'event': event_instance,
             'language': language,
-            'languages': site.languages,
+            'languages': region.languages,
         })

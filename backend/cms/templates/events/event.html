@@ -59,7 +59,7 @@
                         {% trans ' Leave blank to generate unique permalink from title' as slug_placeholder%}
                         {% spaceless %}
                             <div style="display: table; white-space: nowrap;">
-                                <span style="display: table-cell;">https://integreat.app/{{ site.slug }}/{{ language.code }}/</span>
+                                <span style="display: table-cell;">https://integreat.app/{{ region.slug }}/{{ language.code }}/</span>
                                 <span style="display: table-cell; width: 100%;">{% render_field event_translation_form.slug placeholder=slug_placeholder class="w-full rounded" %}</span>
                             </div>
                         {% endspaceless %}
@@ -156,18 +156,18 @@
                         {% if event %}
                             <div class="entity-lang-list mt-4 mb-2">
                                 <label class="text-xs uppercase block mb-2">{% trans 'Translations' %}</label>
-                                <!-- TODO: get available languages from site settings -->
+                                <!-- TODO: get available languages from region settings -->
                                 <table style="width:100%;" border="0" cellspacing="0" cellpadding="0">
                                     {% for other_language in languages %}
                                         {% if other_language != language %}
                                             <tr>
                                                 <td>
-                                                    <a href="{% url 'edit_event' event_id=event.id site_slug=site.slug language_code=other_language.code %}" class="text-black block p-2">
+                                                    <a href="{% url 'edit_event' event_id=event.id region_slug=region.slug language_code=other_language.code %}" class="text-black block p-2">
                                                         {{ other_language.name }}
                                                     </a>
                                                 </td>
                                                 <td>
-                                                    <a href="{% url 'edit_event' event_id=event.id site_slug=site.slug language_code=other_language.code %}" class="text-black block p-2 relative">
+                                                    <a href="{% url 'edit_event' event_id=event.id region_slug=region.slug language_code=other_language.code %}" class="text-black block p-2 relative">
                                                         <i data-feather="{% if other_language in event.languages %}edit-2{% else %}plus{% endif %}"></i>
                                                     </a>
                                                 </td>

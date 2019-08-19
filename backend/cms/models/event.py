@@ -162,12 +162,12 @@ class Event(models.Model):
         return event_translation
 
     @classmethod
-    def get_list(cls, site_slug):
+    def get_list(cls, region_slug):
         """
         Function: Get List View
 
         Args:
-            site_slug: slug of the site the event belongs to
+            region_slug: slug of the region the event belongs to
 
         Returns:
             [events]: Array of all Events
@@ -175,7 +175,7 @@ class Event(models.Model):
         events = cls.objects.all().prefetch_related(
             'event_translations'
         ).filter(
-            site__slug=site_slug
+            region__slug=region_slug
         )
         return events
 
@@ -255,7 +255,7 @@ class EventTranslation(models.Model):
 
     @property
     def permalink(self):
-        return self.event.site.slug + '/' \
+        return self.event.region.slug + '/' \
                + self.language.code + '/' \
                + self.slug + '/'
 

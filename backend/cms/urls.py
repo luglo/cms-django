@@ -7,6 +7,7 @@ from django.contrib.auth import views as auth_views
 
 from .views import analytics
 from .views import dashboard
+from .views import events
 from .views import language_tree
 from .views import languages
 from .views import media

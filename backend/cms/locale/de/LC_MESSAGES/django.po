@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-06 18:03+0200\n"
+"POT-Creation-Date: 2019-08-19 13:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Florian Hofhammer <hofhammer@integreat-app.de>\n"
 "Language-Team:\n"
@@ -17,37 +17,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: models/event.py:236 models/page.py:151
+#: models/event.py:236 models/page.py:149
 msgid "Draft"
 msgstr "Entwurf"
 
-#: models/event.py:237 models/page.py:152
+#: models/event.py:237 models/page.py:150
 msgid "Pending Review"
 msgstr "Review ausstehend"
 
-#: models/event.py:238 models/page.py:153
+#: models/event.py:238 models/page.py:151
 msgid "Finished Review"
 msgstr "Review abgeschlossen"
 
-#: models/language.py:23
+#: models/language.py:24
 msgid "Left to right"
 msgstr "Links nach Rechts"
 
-#: models/language.py:24
+#: models/language.py:25
 msgid "Right to left"
 msgstr "Rechts nach Links"
-
-#: models/page.py:151
-msgid "Draft"
-msgstr "Entwurf"
-
-#: models/page.py:152
-msgid "Pending Review"
-msgstr "Review ausstehend"
-
-#: models/page.py:153
-msgid "Finished Review"
-msgstr "Review abgeschlossen"
 
 #: models/region.py:20 templates/language_tree/tree.html:31
 #: templates/users/admin/list.html:28 templates/users/admin/user.html:82
@@ -186,6 +174,23 @@ msgstr "Integreat CMS"
 msgid "Translation Coverage"
 msgstr "Abdeckung der Übersetzungen"
 
+#: templates/error_handler/csrf_failure.html:6
+msgid "CSRF Error"
+msgstr "CSRF Fehler"
+
+#: templates/error_handler/csrf_failure.html:8
+msgid "Please try to reload the page."
+msgstr "Bitte versuchen Sie die Seite neu zu laden."
+
+#: templates/error_handler/csrf_failure.html:11
+#: templates/error_handler/http_error.html:12
+msgid "Return back home"
+msgstr "Zurück zur Startseite"
+
+#: templates/error_handler/http_error.html:6
+msgid "Error"
+msgstr "Fehler"
+
 #: templates/events/event.html:16
 #, python-format
 msgid " Edit event \"%(event_title)s\""
@@ -202,7 +207,7 @@ msgstr "Veranstaltung erstellen"
 #: templates/events/event.html:31 templates/language_tree/tree_node.html:19
 #: templates/languages/language.html:19
 #: templates/organizations/organization.html:21 templates/pages/page.html:29
-#: templates/pages/sbs_page.html:38
+#: templates/pages/sbs_page.html:38 templates/pois/poi.html:27
 #: templates/push_notifications/push_notification.html:26
 #: templates/regions/region.html:21 templates/roles/role.html:21
 #: templates/users/admin/user.html:21 templates/users/region/user.html:21
@@ -217,29 +222,32 @@ msgstr "Veröffentlichen"
 
 #: templates/events/event.html:47 templates/events/list_events.html:33
 #: templates/pages/archive.html:21 templates/pages/page.html:43
-#: templates/pages/tree.html:57 templates/push_notifications/list.html:24
+#: templates/pages/tree.html:57 templates/pois/list.html:32
+#: templates/pois/poi.html:36 templates/push_notifications/list.html:24
 #: templates/push_notifications/push_notification.html:49
 msgid "Title"
 msgstr "Titel"
 
 #: templates/events/event.html:48 templates/pages/page.html:44
-#: templates/pages/sbs_page.html:30
+#: templates/pages/sbs_page.html:30 templates/pois/poi.html:37
 msgid "Insert title here"
 msgstr "Titel hier eingeben"
 
-#: templates/events/event.html:51
+#: templates/events/event.html:51 templates/pois/poi.html:40
 msgid "Description"
 msgstr "Beschreibung"
 
-#: templates/events/event.html:52
+#: templates/events/event.html:52 templates/pois/poi.html:41
 msgid "Insert description here"
 msgstr "Beschreibung hier eingeben"
 
 #: templates/events/event.html:57 templates/pages/page.html:53
+#: templates/pois/poi.html:70
 msgid "Permalink"
 msgstr ""
 
 #: templates/events/event.html:59 templates/pages/page.html:55
+#: templates/pois/poi.html:72
 msgid " Leave blank to generate unique permalink from title"
 msgstr ""
 " Dieses Feld freilassen, um eine eindeutigen Permalink aus dem Titel zu "
@@ -291,16 +299,19 @@ msgstr "Wiederholung endet"
 
 #: templates/events/event.html:151 templates/language_tree/tree.html:30
 #: templates/language_tree/tree_node.html:28 templates/pages/page.html:96
+#: templates/pois/poi.html:87
 #: templates/push_notifications/push_notification.html:62
 msgid "Language"
 msgstr "Sprache"
 
 #: templates/events/event.html:152 templates/pages/page.html:97
+#: templates/pois/poi.html:88
 #: templates/push_notifications/push_notification.html:63
 msgid "Current language"
 msgstr "Aktuelle Sprache"
 
 #: templates/events/event.html:158 templates/pages/page.html:103
+#: templates/pois/poi.html:94
 #: templates/push_notifications/push_notification.html:70
 msgid "Translations"
 msgstr "Übersetzungen"
@@ -310,7 +321,8 @@ msgid "Visibility"
 msgstr "Sichtbarkeit"
 
 #: templates/events/event.html:194 templates/pages/page.html:172
-#: templates/regions/list.html:28 templates/regions/region.html:74
+#: templates/pois/poi.html:117 templates/regions/list.html:28
+#: templates/regions/region.html:74
 msgid "Status"
 msgstr "Status"
 
@@ -327,6 +339,7 @@ msgid "Create event"
 msgstr "Veranstaltung erstellen"
 
 #: templates/events/list_events.html:32 templates/pages/tree.html:56
+#: templates/pois/list.html:31
 msgid "ID"
 msgstr ""
 
@@ -342,33 +355,13 @@ msgstr "Optionen"
 msgid "No events available yet."
 msgstr "Noch keine Veranstaltungen vorhanden."
 
-#: templates/error_handler/csrf_failure.html:6
-msgid "CSRF Error"
-msgstr "CSRF Fehler"
-
-#: templates/error_handler/csrf_failure.html:8
-msgid "Please try to reload the page."
-msgstr "Bitte versuchen Sie die Seite neu zu laden."
-
-#: templates/error_handler/csrf_failure.html:11
-#: templates/error_handler/http_error.html:12
-msgid "Return back home"
-msgstr "Zurück zur Startseite"
-
-#: templates/error_handler/http_error.html:6
-msgid "Error"
-msgstr "Fehler"
+#: templates/events/list_row.html:28
+msgid "Not specified"
+msgstr "Nicht festgelegt"
 
 #: templates/language_tree/tree.html:19
 msgid "Create language tree node"
 msgstr "Sprach-Knoten hinzufügen"
-
-#: templates/language_tree/tree.html:30
-#: templates/language_tree/tree_node.html:28 templates/pages/page.html:96
-#: templates/pois/poi.html:87
-#: templates/push_notifications/push_notification.html:62
-msgid "Language"
-msgstr "Sprache"
 
 #: templates/language_tree/tree.html:46
 msgid "No language tree available yet."
@@ -379,18 +372,10 @@ msgid "Edit language tree node"
 msgstr "Knoten bearbeiten"
 
 #: templates/language_tree/tree_node.html:14
+#, fuzzy
+#| msgid "Language"
 msgid "Add language"
-msgstr "Sprache hinzufügen"
-
-#: templates/language_tree/tree_node.html:19
-#: templates/languages/language.html:19
-#: templates/organizations/organization.html:21 templates/pages/page.html:29
-#: templates/pages/sbs_page.html:38 templates/pois/poi.html:27
-#: templates/push_notifications/push_notification.html:26
-#: templates/regions/region.html:21 templates/roles/role.html:21
-#: templates/users/admin/user.html:21 templates/users/region/user.html:21
-msgid "Save"
-msgstr "Speichern"
+msgstr "Sprache"
 
 #: templates/language_tree/tree_node.html:37
 msgid "Source Language"
@@ -572,13 +557,6 @@ msgstr "Erlaubnis zum Veröffentlichen erteilen"
 msgid "Archived Pages"
 msgstr "Archivierte Seiten"
 
-#: templates/pages/archive.html:21 templates/pages/page.html:43
-#: templates/pages/tree.html:57 templates/pois/list.html:32
-#: templates/pois/poi.html:36 templates/push_notifications/list.html:24
-#: templates/push_notifications/push_notification.html:49
-msgid "Title"
-msgstr "Titel"
-
 #: templates/pages/archive.html:33
 msgid "Restore page"
 msgstr "Seite wiederherstellen"
@@ -635,11 +613,6 @@ msgstr "Seite \"%(page_title)s\" bearbeiten"
 msgid "Create new page"
 msgstr "Neue Seite erstellen"
 
-#: templates/pages/page.html:44 templates/pages/sbs_page.html:30
-#: templates/pois/poi.html:37
-msgid "Insert title here"
-msgstr "Titel hier eingeben"
-
 #: templates/pages/page.html:47
 #: templates/push_notifications/push_notification.html:54
 msgid "Content"
@@ -648,16 +621,6 @@ msgstr "Inhalt"
 #: templates/pages/page.html:48 templates/pages/sbs_page.html:33
 msgid "Insert content here"
 msgstr "Inhalt hier eingeben"
-
-#: templates/pages/page.html:53 templates/pois/poi.html:70
-msgid "Permalink"
-msgstr ""
-
-#: templates/pages/page.html:55 templates/pois/poi.html:72
-msgid " Leave blank to generate unique permalink from title"
-msgstr ""
-" Dieses Feld freilassen, um eine eindeutigen Permalink aus dem Titel zu "
-"generieren"
 
 #: templates/pages/page.html:67
 msgid "Embed live content"
@@ -691,16 +654,6 @@ msgstr ""
 "Dies betrifft nur Benutzer, die nicht ohnehin die Berechtigung haben, "
 "beliebige Seiten zu ändern."
 
-#: templates/pages/page.html:97 templates/pois/poi.html:88
-#: templates/push_notifications/push_notification.html:63
-msgid "Current language"
-msgstr "Aktuelle Sprache"
-
-#: templates/pages/page.html:103 templates/pois/poi.html:94
-#: templates/push_notifications/push_notification.html:70
-msgid "Translations"
-msgstr "Übersetzungen"
-
 #: templates/pages/page.html:125
 msgid "Side by Side View"
 msgstr "Übersetzungen nebeneinander anzeigen"
@@ -716,15 +669,6 @@ msgstr "Verhältnis"
 #: templates/pages/page.html:151
 msgid "Page"
 msgstr "Seite"
-
-#: templates/pages/page.html:162
-msgid "Visibility"
-msgstr "Sichtbarkeit"
-
-#: templates/pages/page.html:172 templates/pois/poi.html:117
-#: templates/regions/list.html:28 templates/regions/region.html:74
-msgid "Status"
-msgstr "Status"
 
 #: templates/pages/page.html:181 templates/pois/poi.html:126
 #: templates/regions/region.html:57
@@ -764,10 +708,6 @@ msgstr "Hochladen"
 #: templates/pages/tree.html:44
 msgid "Create page"
 msgstr "Seite erstellen"
-
-#: templates/pages/tree.html:56 templates/pois/list.html:31
-msgid "ID"
-msgstr ""
 
 #: templates/pages/tree.html:67
 msgid "Creator"
@@ -814,6 +754,8 @@ msgid "No POIs available yet."
 msgstr "Noch keine POIs vorhanden."
 
 #: templates/pois/poi.html:16
+#, fuzzy, python-format
+#| msgid "Edit poi \"%(poi_title)s\""
 msgid "Edit poi \"%(poi_title)s\""
 msgstr "POI \"%(page_title)s\" bearbeiten"
 
@@ -824,14 +766,6 @@ msgstr "Neue POI Übersetzung erstellen"
 #: templates/pois/poi.html:22
 msgid "Create new point of interest"
 msgstr "Neuen POI erstellen"
-
-#: templates/pois/poi.html:40
-msgid "Description"
-msgstr "Beschreibung"
-
-#: templates/pois/poi.html:41
-msgid "Insert description here"
-msgstr "Beschreibung hier eingeben"
 
 #: templates/pois/poi.html:47
 msgid "Street"
@@ -1314,62 +1248,6 @@ msgid "Yes, delete this user now"
 msgstr "Ja, diesen Benutzer jetzt löschen"
 
 #: views/error_handler/error_handler.py:5
-#: views/events/event.py:98
-msgid "Event was successfully created and published."
-msgstr "Veranstaltung wurde erfolgreich erstellt und veröffentlicht."
-
-#: views/events/event.py:100
-msgid "Event was successfully created."
-msgstr "Veranstaltung wurde erfolgreich erstellt."
-
-#: views/events/event.py:104 views/pages/page.py:125
-msgid "Translation was successfully created and published."
-msgstr "Übersetzung wurde erfolgreich erstellt und veröffentlicht."
-
-#: views/events/event.py:106 views/pages/page.py:127
-#: views/pages/sbs_page.py:103
-msgid "Translation was successfully created."
-msgstr "Übersetzung wurde erfolgreich erstellt."
-
-#: views/events/event.py:109 views/pages/page.py:130
-msgid "Translation was successfully published."
-msgstr "Übersetzung wurde erfolgreich veröffentlich."
-
-#: views/events/event.py:111 views/pages/page.py:132
-#: views/pages/sbs_page.py:105
-msgid "Translation was successfully saved."
-msgstr "Übersetzung wurde erfolgreich gespeichert."
-
-#: views/events/event.py:113 views/pages/page.py:134
-#: views/pages/sbs_page.py:107 views/users/region_users.py:113
-#: views/users/users.py:89
-msgid "No changes detected."
-msgstr "Keine Änderungen vorgenommen."
-
-#: views/events/event.py:121 views/language_tree/language_tree_node.py:70
-#: views/organizations/organizations.py:72 views/pages/page.py:142
-#: views/pages/sbs_page.py:109
-#: views/push_notifications/push_notifications.py:171
-#: views/regions/regions.py:82 views/roles/roles.py:71
-#: views/users/region_users.py:116 views/users/users.py:92
-msgid "Errors have occurred."
-msgstr "Es sind Fehler aufgetreten."
-
-#: views/events/event_form.py:204 views/pages/page_form.py:162
-msgid "Public"
-msgstr "Öffentlich"
-
-#: views/events/event_form.py:205 views/pages/page_form.py:163
-msgid "Private"
-msgstr "Privat"
-
-#: views/events/events.py:38
-msgid "Please create at least one language node before creating events."
-msgstr ""
-"Bitte erstellen Sie mindestens einen Sprach-Knoten, bevor Sie "
-"Veranstaltungen verwalten."
-
-#: views/general/error_handler.py:5
 msgid "Bad request"
 msgstr "Inkorrekte Anfrage"
 
@@ -1401,6 +1279,63 @@ msgstr "Interner Server-Fehler"
 msgid "An unexpected error has occurred."
 msgstr "Es ist ein unerwarteter Fehler aufgetreten."
 
+#: views/events/event.py:98
+msgid "Event was successfully created and published."
+msgstr "Veranstaltung wurde erfolgreich erstellt und veröffentlicht."
+
+#: views/events/event.py:100
+msgid "Event was successfully created."
+msgstr "Veranstaltung wurde erfolgreich erstellt."
+
+#: views/events/event.py:104 views/pages/page.py:124
+msgid "Translation was successfully created and published."
+msgstr "Übersetzung wurde erfolgreich erstellt und veröffentlicht."
+
+#: views/events/event.py:106 views/pages/page.py:126
+#: views/pages/sbs_page.py:103
+msgid "Translation was successfully created."
+msgstr "Übersetzung wurde erfolgreich erstellt."
+
+#: views/events/event.py:109 views/pages/page.py:129
+msgid "Translation was successfully published."
+msgstr "Übersetzung wurde erfolgreich veröffentlich."
+
+#: views/events/event.py:111 views/pages/page.py:131
+#: views/pages/sbs_page.py:105
+msgid "Translation was successfully saved."
+msgstr "Übersetzung wurde erfolgreich gespeichert."
+
+#: views/events/event.py:113 views/pages/page.py:133
+#: views/pages/sbs_page.py:107 views/pois/poi.py:113
+#: views/users/region_users.py:113 views/users/users.py:89
+msgid "No changes detected."
+msgstr "Keine Änderungen vorgenommen."
+
+#: views/events/event.py:121 views/language_tree/language_tree_node.py:70
+#: views/organizations/organizations.py:72 views/pages/page.py:141
+#: views/pages/sbs_page.py:109 views/pois/poi.py:121
+#: views/push_notifications/push_notifications.py:171
+#: views/regions/regions.py:82 views/roles/roles.py:71
+#: views/users/region_users.py:116 views/users/users.py:92
+msgid "Errors have occurred."
+msgstr "Es sind Fehler aufgetreten."
+
+#: views/events/event_form.py:204 views/pages/page_form.py:161
+#: views/pois/poi_form.py:72
+msgid "Public"
+msgstr "Öffentlich"
+
+#: views/events/event_form.py:205 views/pages/page_form.py:162
+#: views/pois/poi_form.py:73
+msgid "Private"
+msgstr "Privat"
+
+#: views/events/events.py:38
+msgid "Please create at least one language node before creating events."
+msgstr ""
+"Bitte erstellen Sie mindestens einen Sprach-Knoten, bevor Sie "
+"Veranstaltungen verwalten."
+
 #: views/language_tree/language_tree_node.py:61
 msgid "Language tree node was saved successfully."
 msgstr "Sprach-Baum wurde erfolgreich gespeichert."
@@ -1409,16 +1344,7 @@ msgstr "Sprach-Baum wurde erfolgreich gespeichert."
 msgid "Language tree node was created successfully."
 msgstr "Sprach-Baum wurde erfolgreich erstellt."
 
-#: views/language_tree/language_tree_node.py:70
-#: views/organizations/organizations.py:72 views/pages/page.py:142
-#: views/pages/sbs_page.py:109 views/pois/poi.py:126
-#: views/push_notifications/push_notifications.py:171
-#: views/regions/regions.py:82 views/roles/roles.py:71
-#: views/users/region_users.py:116 views/users/users.py:92
-msgid "Errors have occurred."
-msgstr "Es sind Fehler aufgetreten."
-
-#: views/language_tree/language_tree_node_form.py:62
+#: views/language_tree/language_tree_node_form.py:63
 msgid ""
 "This region has already a default language.Please specify a source language "
 "for this language."
@@ -1426,7 +1352,7 @@ msgstr ""
 "Diese Region besitzt bereits eine Standard-Sprache. Bitte geben Sie eine "
 "Quell-Sprache für diese Sprache ein."
 
-#: views/language_tree/language_tree_node_form.py:71
+#: views/language_tree/language_tree_node_form.py:72
 msgid ""
 "The source language belongs to another region.Please specify a source "
 "language of this region."
@@ -1450,59 +1376,38 @@ msgstr "Organisation wurde erfolgreich erstellt."
 msgid "Organization saved successfully"
 msgstr "Organisation wurde erfolgreich gespeichert."
 
-#: views/pages/page.py:117 views/pages/page.py:166
+#: views/pages/page.py:116 views/pages/page.py:165
 msgid "Page was successfully archived."
 msgstr "Seite wurde erfolgreich archiviert."
 
-#: views/pages/page.py:120
+#: views/pages/page.py:119
 msgid "Page was successfully created and published."
 msgstr "Seite wurde erfolgreich erstellt und veröffentlicht."
 
-#: views/pages/page.py:122
+#: views/pages/page.py:121
 msgid "Page was successfully created."
 msgstr "Seite wurde erfolgreich erstellt."
 
-#: views/pages/page.py:125
-msgid "Translation was successfully created and published."
-msgstr "Übersetzung wurde erfolgreich erstellt und veröffentlicht."
-
-#: views/pages/page.py:127 views/pages/sbs_page.py:103
-msgid "Translation was successfully created."
-msgstr "Übersetzung wurde erfolgreich erstellt."
-
-#: views/pages/page.py:130
-msgid "Translation was successfully published."
-msgstr "Übersetzung wurde erfolgreich veröffentlich."
-
-#: views/pages/page.py:132 views/pages/sbs_page.py:105
-msgid "Translation was successfully saved."
-msgstr "Übersetzung wurde erfolgreich gespeichert."
-
-#: views/pages/page.py:134 views/pages/sbs_page.py:107 views/pois/poi.py:118
-#: views/users/region_users.py:113 views/users/users.py:89
-msgid "No changes detected."
-msgstr "Keine Änderungen vorgenommen."
-
-#: views/pages/page.py:185
+#: views/pages/page.py:184
 msgid "Page was successfully restored."
 msgstr "Seite wurde erfolgreich wiederhergestellt."
 
-#: views/pages/page.py:301 views/pages/page.py:316
+#: views/pages/page.py:300 views/pages/page.py:315
 #, python-brace-format
 msgid "Information: The user {user} has this permission already."
 msgstr "Information: Der Nutzer {user} hat diese Berechtigung bereits"
 
-#: views/pages/page.py:309
+#: views/pages/page.py:308
 #, python-brace-format
 msgid "Success: The user {user} can now edit this page."
 msgstr "Erfolg: Der Nutzer {user} kann nun diese Seite bearbeiten"
 
-#: views/pages/page.py:324
+#: views/pages/page.py:323
 #, python-brace-format
 msgid "Success: The user {user} can now publish this page."
 msgstr "Erfolg: Der Nutzer {user} kann dieses Seite nurn veröffentlichen"
 
-#: views/pages/page.py:391
+#: views/pages/page.py:390
 #, python-brace-format
 msgid ""
 "Information: The user {user} has been removed from the editors of this page, "
@@ -1512,12 +1417,12 @@ msgstr ""
 "bearbeiten wurde entfernt,aber er kann sie auf Grund seiner anderen "
 "Berechtigungen weiterhin veröffentlichen"
 
-#: views/pages/page.py:397
+#: views/pages/page.py:396
 #, python-brace-format
 msgid "Success: The user {user} cannot edit this page anymore."
 msgstr "Erfolg: Der Nutzer {user} kann diese Seite nicht mehr bearbeiten"
 
-#: views/pages/page.py:408
+#: views/pages/page.py:407
 #, python-brace-format
 msgid ""
 "Information: The user {user} has been removed from the publishers of this "
@@ -1527,18 +1432,10 @@ msgstr ""
 "veröffentlichen wurde entfernt,aber er kann sie auf Grund seiner anderen "
 "Berechtigungen weiterhin veröffentlichen"
 
-#: views/pages/page.py:414
+#: views/pages/page.py:413
 #, python-brace-format
 msgid "Success: The user {user} cannot publish this page anymore."
 msgstr "Erfolg: Der Nutzer {user} kann diese Seite nicht mehr veröffentlichen"
-
-#: views/pages/page_form.py:162 views/pois/poi_form.py:72
-msgid "Public"
-msgstr "Öffentlich"
-
-#: views/pages/page_form.py:163 views/pois/poi_form.py:73
-msgid "Private"
-msgstr "Privat"
 
 #: views/pages/pages.py:39
 msgid "Please create at least one language node before creating pages."
@@ -1546,43 +1443,42 @@ msgstr ""
 "Bitte erstellen Sie mindestens einen Sprach-Knoten, bevor Sie Seiten "
 "verwalten."
 
-#: views/pois/poi.py:101 views/pois/poi.py:148
+#: views/pois/poi.py:96 views/pois/poi.py:143
 msgid "POI was successfully archived."
 msgstr "POI wurde erfolgreich archiviert."
 
-#: views/pois/poi.py:104
+#: views/pois/poi.py:99
 msgid "POI was successfully created and published."
 msgstr "POI wurde erfolgreich erstellt und veröffentlicht."
 
-#: views/pois/poi.py:106
+#: views/pois/poi.py:101
 msgid "POI was successfully created."
 msgstr "POI wurde erfolgreich erstellt."
 
-#: views/pois/poi.py:109
+#: views/pois/poi.py:104
 msgid "POI Translation was successfully created and published."
 msgstr "POI Übersetzung wurde erfolgreich erstellt und veröffentlicht."
 
-#: views/pois/poi.py:111
+#: views/pois/poi.py:106
 msgid "POI Translation was successfully created."
 msgstr "POI Übersetzung wurde erfolgreich erstellt."
 
-#: views/pois/poi.py:114
+#: views/pois/poi.py:109
 msgid "POI Translation was successfully published."
 msgstr "POI Übersetzung wurde erfolgreich veröffentlich."
 
-#: views/pois/poi.py:116
+#: views/pois/poi.py:111
 msgid "POI Translation was successfully saved."
 msgstr "POI Übersetzung wurde erfolgreich gespeichert."
 
-#: views/pois/poi.py:165
+#: views/pois/poi.py:160
 msgid "POI was successfully restored."
 msgstr "POI wurde erfolgreich wiederhergestellt."
 
 #: views/pois/pois.py:39
 msgid "Please create at least one language node before creating pois."
 msgstr ""
-"Bitte erstellen Sie mindestens einen Sprach-Knoten, bevor Sie POIs "
-"verwalten."
+"Bitte erstellen Sie mindestens einen Sprach-Knoten, bevor Sie POIs verwalten."
 
 #: views/push_notifications/push_notifications.py:44
 msgid ""
@@ -1647,22 +1543,22 @@ msgstr "Rolle wurde erfolgreich gespeichert."
 msgid "Role created successfully"
 msgstr "Rolle wurde erfolgreich erstellt."
 
-#: views/statistics/statistics.py:59
+#: views/statistics/statistics.py:58
 msgid "Please enter a correct start and enddate"
 msgstr "Bitte fügen sie ein valides Start- und Enddatum für die Ansicht ein."
 
-#: views/statistics/statistics.py:81
+#: views/statistics/statistics.py:80
 msgid "Connection to Matomo could not be established"
 msgstr "Es konnte keine Verbindung zum Matomo hergestellt werden."
 
-#: views/statistics/statistics.py:84
+#: views/statistics/statistics.py:83
 msgid ""
 "The url you have entered is invalid. Please check the corresponding settings."
 msgstr ""
 "Die URL, die Sie eingegeben haben, ist inkorrekt. Bitte prüfen Sie die "
 "Einstellungen."
 
-#: views/statistics/statistics.py:87
+#: views/statistics/statistics.py:86
 msgid ""
 "There was an error during the establishment of a connection. Please check "
 "the region and the entered key."

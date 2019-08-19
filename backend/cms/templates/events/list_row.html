@@ -1,3 +1,4 @@
+{% load i18n %}
 {% load event_filters %}
 <tr class="border-t border-solid border-grey-lighter hover:bg-grey-lightest">
     <td style="padding-left: 10px">
@@ -20,11 +21,15 @@
         </div>
     </td>
     <td>
-        <!-- TODO: filter location for title in correct language, e.g. event.location|poi_translation_title:language -->
-        {{ event.location|title }}
+        {% if event.location is not None %}
+            <!-- TODO: filter location for title in correct language, e.g. event.location|poi_translation_title:language -->
+            {{ event.location|title }}
+        {% else %}
+            {% trans 'Not specified' %}
+        {% endif %}
     </td>
     <td>
-        {{ event.date|date:'d.m.Y'}}, {{ event.date|time:'H:i' }}
+        {{ event.start_date|date:'d.m.Y'}}, {{ event.start_time|time:'H:i' }}
     </td>
     <td class="pl-2 pr-4">
         <!-- TODO: add link to view event in web app -->

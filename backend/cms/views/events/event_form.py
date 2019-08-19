@@ -41,7 +41,6 @@ class EventForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         # pop kwargs to prevent error when calling super class
         self.region = kwargs.pop('region', None)
-        language = kwargs.pop('language', None)
         instance = kwargs.get('instance')
         if instance is not None:
             # instantiate ModelForm with initial values

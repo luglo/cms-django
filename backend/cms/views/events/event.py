@@ -1,17 +1,20 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView
 
-from .event_form import EventForm, EventTranslationForm
+from ..events import EventForm, EventTranslationForm
+from ..pois import POIForm, POITranslationForm
 from ...decorators import region_permission_required
-from ...models import Region, Language, Event, EventTranslation
+from ...models import Region, Language, Event, EventTranslation, POI, POITranslation
 
 
+@method_decorator(login_required, name='dispatch')
 @method_decorator(region_permission_required, name='dispatch')
-class EventView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+class EventView(PermissionRequiredMixin, TemplateView):
     permission_required = 'cms.view_events'
     raise_exception = True
 
@@ -31,8 +34,7 @@ class EventView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
 
         event_form = EventForm(
             instance=event,
-            region=region,
-            language=language
+            region=region
         )
         event_translation_form = EventTranslationForm(
             instance=event_translation
@@ -68,8 +70,7 @@ class EventView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
         event_form = EventForm(
             request.POST,
             instance=event_instance,
-            region=region,
-            language=language,
+            region=region
         )
         event_translation_form = EventTranslationForm(
             request.POST,

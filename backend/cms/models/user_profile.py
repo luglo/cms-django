@@ -1,14 +1,14 @@
-from django.db import models
 from django.conf import settings
+from django.db import models
 
-from .site import Site
 from .organization import Organization
+from .region import Region
 
 
 class UserProfile(models.Model):
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='profile', on_delete=models.CASCADE)
-    regions = models.ManyToManyField(Site, blank=True)
+    regions = models.ManyToManyField(Region, blank=True)
     organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.SET_NULL)
 
     @property

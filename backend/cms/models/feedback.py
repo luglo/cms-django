@@ -1,8 +1,9 @@
 from django.db import models
-from cms.models.page import Page
-from cms.models.site import Site
-from cms.models.extra import Extra
+
 from cms.models.event import Event
+from cms.models.extra import Extra
+from cms.models.page import Page
+from cms.models.region import Region
 
 
 class Feedback(models.Model):
@@ -25,9 +26,9 @@ class Feedback(models.Model):
         )
 
 
-class SiteFeedback(Feedback):
+class RegionFeedback(Feedback):
 
-    site = models.ForeignKey(Site)
+    region = models.ForeignKey(Region)
 
     class Meta:
         default_permissions = ()

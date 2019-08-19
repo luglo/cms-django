@@ -16,7 +16,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from .language import Language
 from .poi import POI
-from .site import Site
+from .region import Region
 
 
 class RecurrenceRule(models.Model):
@@ -120,7 +120,7 @@ class Event(models.Model):
         ValidationError: Raised if the end date is before the start date
     """
 
-    site = models.ForeignKey(Site, on_delete=models.CASCADE)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE)
     location = models.ForeignKey(POI, on_delete=models.PROTECT, null=True, blank=True)
     start_date = models.DateField()
     start_time = models.TimeField(null=True)

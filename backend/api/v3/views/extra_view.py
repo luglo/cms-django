@@ -1,21 +1,20 @@
 from django.shortcuts import get_object_or_404
-
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
-from api.v3.serializers import ExtraSerializer
 
+from api.v3.serializers import ExtraSerializer
 from cms.models import Extra
 
 
 class ExtrasView(ListAPIView):
     """
-    This API should return a list of extras for a site
+    This API should return a list of extras for a region
     """
     serializer_class = ExtraSerializer
 
     def get_queryset(self):
-        site = self.kwargs['site']
-        return Extra.objects.filter(site=site)
+        region = self.kwargs['region']
+        return Extra.objects.filter(region=region)
 
 
 class ExtraView(RetrieveAPIView):

@@ -1,17 +1,17 @@
 """
-View to build up the dashboard.
+View to build up the admin dashboard.
 """
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
-from django.shortcuts import render
 
-from ...decorators import region_permission_required
+from ...decorators import staff_required
 
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(region_permission_required, name='dispatch')
-class DashboardView(TemplateView):
+@method_decorator(staff_required, name='dispatch')
+class AdminDashboardView(TemplateView):
     """View class representing the Dashboard
 
     Args:
@@ -21,8 +21,8 @@ class DashboardView(TemplateView):
         View : Rendered HTML-Page that will be seen in the CMS-Dashboard
     """
 
-    template_name = 'general/dashboard.html'
-    base_context = {'current_menu_item': 'region_dashboard'}
+    template_name = 'dashboard/admin_dashboard.html'
+    base_context = {'current_menu_item': 'admin_dashboard'}
 
     def get(self, request, *args, **kwargs):
         val = 'To be defined'

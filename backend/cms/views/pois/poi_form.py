@@ -1,69 +1,126 @@
-from django import forms
-from django.core.validators import RegexValidator
+"""
+Form for creating a poi object and poi translation object
+"""
 
-from cms.models import POI, POITranslation, Language
+import logging
+
+from django import forms
+from django.utils.translation import ugettext_lazy as _
+
+from ..utils.slug_utils import generate_unique_slug
+from ...models import POI, POITranslation
+
+logger = logging.getLogger(__name__)
 
 
 class POIForm(forms.ModelForm):
-    # General POI related fields
-    address = forms.CharField(max_length=250, label='Adresse')
-    postcode = forms.CharField(max_length=10, validators=[
-        RegexValidator(regex=r'^[0-9]{4,}$', message='Keine gültige PLZ')], label='Postleitzahl')
-    city = forms.CharField(max_length=250, label='Stadt')
-    region = forms.CharField(max_length=250, label='Region/Bundesland', required=False)
-    country = forms.CharField(max_length=250, label='Land')
-    latitude = forms.FloatField(label='Breitengrad', required=False)
-    longitude = forms.FloatField(label='Längengrad', required=False)
+    """
+    DjangoForm Class, that can be rendered to create deliverable HTML
 
-    # POI translation related fields
-    status = forms.ChoiceField(choices=POITranslation.STATUS)
-    minor_edit = forms.BooleanField(required=False)
-    public = forms.BooleanField(required=False)
+    Args:
+        forms : Defines the form as an Model form related to a database object
+    """
+
+    class Meta:
+        model = POI
+        fields = ['address', 'postcode', 'city', 'country', 'latitude', 'longitude']
+
+    def __init__(self, *args, **kwargs):
+
+        logger.info(
+            'New POIForm instantiated with args %s and kwargs %s',
+            args,
+            kwargs
+        )
+
+        # pop kwarg to make sure the super class does not get this param
+        self.region = kwargs.pop('region', None)
+
+        # instantiate ModelForm
+        super(POIForm, self).__init__(*args, **kwargs)
+
+
+    # pylint: disable=W0221
+    def save(self, *args, **kwargs):
+
+        logger.info(
+            'POIForm saved with args %s and kwargs %s',
+            args,
+            kwargs
+        )
+
+        # don't commit saving of ModelForm, because required fields are still missing
+        kwargs['commit'] = False
+        poi = super(POIForm, self).save(*args, **kwargs)
+
+        if not self.instance.id:
+            # only update these values when poi is created
+            poi.region = self.region
+        poi.save()
+        return poi
+
+
+class POITranslationForm(forms.ModelForm):
+    """
+    DjangoForm Class, that can be rendered to create deliverable HTML
+
+    Args:
+        forms : Defines the form as an Model form related to a database object
+    """
+
+    PUBLIC_CHOICES = (
+        (True, _('Public')),
+        (False, _('Private')),
+    )
 
     class Meta:
         model = POITranslation
-        fields = ['title', 'description']
+        fields = ['title', 'status', 'description', 'slug', 'public']
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
-        super(POIForm, self).__init__(*args, **kwargs)
-        # TODO: get available languages from site settings
-        self.fields['language'] = forms.ChoiceField(
-            choices=[('de', 'Deutsch'),
-                     ('ar', 'Arabisch'),
-                     ('fa', 'Farsi'),
-                     ('fr', 'Französisch'),
-                     ('tr', 'Türkisch')])
 
-    def save_poi(self, poi_translation_id=None):
-        # TODO: version, active_version
-        if poi_translation_id:
-            p = POITranslation.objects.filter(
-                id=poi_translation_id).select_related('poi').first()
-            poi = POI.objects.get(id=p.poi.id)
-            poi_translation = POITranslation.objects.get(id=p.id)
-        else:
-            poi = POI()
-            poi_translation = POITranslation()
+        logger.info(
+            'New POITranslationForm with args %s and kwargs %s',
+            args,
+            kwargs
+        )
+
+        # pop kwarg to make sure the super class does not get this param
+        self.region = kwargs.pop('region', None)
+        self.language = kwargs.pop('language', None)
+
+        super(POITranslationForm, self).__init__(*args, **kwargs)
+
+        self.fields['public'].widget = forms.Select(choices=self.PUBLIC_CHOICES)
+
+    # pylint: disable=W0221
+    def save(self, *args, **kwargs):
+
+        logger.info(
+            'POITranslationForm saved with args %s and kwargs %s',
+            args,
+            kwargs
+        )
+
+        # pop kwarg to make sure the super class does not get this param
+        poi = kwargs.pop('poi', None)
+        user = kwargs.pop('user', None)
+
+        if not self.instance.id:
+            # don't commit saving of ModelForm, because required fields are still missing
+            kwargs['commit'] = False
+
+        poi_translation = super(POITranslationForm, self).save(*args, **kwargs)
+
+        if not self.instance.id:
+            # only update these values when poi translation is created
             poi_translation.poi = poi
-            poi_translation.creator = self.user
+            poi_translation.creator = user
+            poi_translation.language = self.language
 
-        # save POI
-        poi.address = self.cleaned_data['address']
-        poi.postcode = self.cleaned_data['postcode']
-        poi.city = self.cleaned_data['city']
-        poi.region = self.cleaned_data['region']
-        poi.country = self.cleaned_data['country']
-        poi.latitude = self.cleaned_data['latitude']
-        poi.longitude = self.cleaned_data['longitude']
-        poi.save()
-
-        # save poi translation
-        poi_translation.title = self.cleaned_data['title']
-        poi_translation.description = self.cleaned_data['description']
-        poi_translation.status = self.cleaned_data['status']
-        poi_translation.language = Language.objects.filter(
-            code=self.cleaned_data['language']).first()
-        poi_translation.minor_edit = self.cleaned_data['minor_edit']
-        poi_translation.public = self.cleaned_data['public']
         poi_translation.save()
+
+        return poi_translation
+
+    def clean_slug(self):
+        return generate_unique_slug(self, 'poi')

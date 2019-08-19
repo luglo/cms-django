@@ -2,18 +2,18 @@
     Side by side view
 """
 
-from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.utils.translation import ugettext as _
-from django.utils.decorators import method_decorator
-from django.views.generic import TemplateView
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect
+from django.utils.decorators import method_decorator
+from django.utils.translation import ugettext as _
+from django.views.generic import TemplateView
 
 from .page_form import PageTranslationForm
-from ...models import Page, Site, Language
 from ...decorators import region_permission_required
+from ...models import Page, Region, Language
 
 
 @method_decorator(login_required, name='dispatch')
@@ -27,7 +27,7 @@ class SBSPageView(PermissionRequiredMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
 
-        site = Site.objects.get(slug=kwargs.get('site_slug'))
+        region = Region.objects.get(slug=kwargs.get('region_slug'))
         page = Page.objects.get(pk=kwargs.get('page_id'))
 
         source_language_code, target_language_code = kwargs.get('language_code').split('__')
@@ -40,7 +40,7 @@ class SBSPageView(PermissionRequiredMixin, TemplateView):
         if not source_page_translation:
             return redirect('edit_page', **{
                 'page_id': page.id,
-                'site_slug': site.slug,
+                'region_slug': region.slug,
                 'language_code': source_language.code,
             })
 
@@ -61,7 +61,7 @@ class SBSPageView(PermissionRequiredMixin, TemplateView):
         if not request.user.has_perm('cms.edit_pages'):
             raise PermissionDenied
 
-        site = Site.objects.get(slug=kwargs.get('site_slug'))
+        region = Region.objects.get(slug=kwargs.get('region_slug'))
         page = Page.objects.get(pk=kwargs.get('page_id'))
 
         source_language_code, target_language_code = kwargs.get('language_code').split('__')
@@ -74,7 +74,7 @@ class SBSPageView(PermissionRequiredMixin, TemplateView):
         if not source_page_translation:
             return redirect('edit_page', **{
                 'page_id': page.id,
-                'site_slug': site.slug,
+                'region_slug': region.slug,
                 'language_code': source_language.code,
             })
 

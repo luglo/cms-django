@@ -1,28 +1,29 @@
 """Provides routing to all submodules inside the application
 """
-from django.conf import settings
+from django.conf import settings as django_settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 
 from .views import analytics
-from .views import events
-from .views import general
+from .views import dashboard
 from .views import language_tree
 from .views import languages
 from .views import media
 from .views import organizations
 from .views import pages
+from .views import pois
 from .views import push_notifications
 from .views import regions
 from .views import registration
 from .views import roles
+from .views import settings
 from .views import statistics
 from .views import users
 
 urlpatterns = [
-    url(r'^$', general.RedirectView.as_view(), name='redirect'),
-    url(r'^admin_dashboard/$', general.AdminDashboardView.as_view(), name='admin_dashboard'),
+    url(r'^$', dashboard.RedirectView.as_view(), name='redirect'),
+    url(r'^admin_dashboard/$', dashboard.AdminDashboardView.as_view(), name='admin_dashboard'),
     url(r'^regions/', include([
         url(r'^$', regions.RegionListView.as_view(), name='regions'),
         url(r'^new$', regions.RegionView.as_view(), name='new_region'),
@@ -104,7 +105,7 @@ urlpatterns = [
         ])),
     ])),
 
-    url(r'^settings/$', general.AdminSettingsView.as_view(), name='admin_settings'),
+    url(r'^settings/$', settings.AdminSettingsView.as_view(), name='admin_settings'),
     url(r'^login/$', registration.login, name='login'),
     url(r'^logout/$', registration.logout, name='logout'),
     url(r'^password_reset/', include([
@@ -144,8 +145,8 @@ urlpatterns = [
         ),
     ])),
 
-    url(r'^(?P<site_slug>[-\w]+)/', include([
-        url(r'^$', general.DashboardView.as_view(), name='dashboard'),
+    url(r'^(?P<region_slug>[-\w]+)/', include([
+        url(r'^$', dashboard.DashboardView.as_view(), name='dashboard'),
         url(r'^translation_coverage/', analytics.TranslationCoverageView.as_view(), name='translation_coverage'),
         url(r'^pages/', include([
             url(r'^$', pages.PageTreeView.as_view(), name='pages'),
@@ -213,6 +214,40 @@ urlpatterns = [
                 ])),
             ])),
         ])),
+        url(r'^pois/', include([
+            url(r'^$', pois.POIListView.as_view(), name='pois'),
+            url(r'^(?P<language_code>[-\w]+)/', include([
+                url(r'^$', pois.POIListView.as_view(), name='pois'),
+                url(r'^new$', pois.POIView.as_view(), name='new_poi'),
+                url(r'^(?P<poi_id>[0-9]+)/', include([
+                    url(
+                        r'^view$',
+                        pois.view_poi,
+                        name='view_poi'
+                    ),
+                    url(
+                        r'^edit$',
+                        pois.POIView.as_view(),
+                        name='edit_poi'
+                    ),
+                    url(
+                        r'^archive$',
+                        pois.archive_poi,
+                        name='archive_poi'
+                    ),
+                    url(
+                        r'^restore$',
+                        pois.restore_poi,
+                        name='restore_poi'
+                    ),
+                    url(
+                        r'^delete$',
+                        pois.POIView.as_view(),
+                        name='delete_poi'
+                    ),
+                ])),
+            ])),
+        ])),
         url(r'^push_notifications/', include([
             url(r'^$', push_notifications.PushNotificationListView.as_view(), name='push_notifications'),
             url(r'^(?P<language_code>[-\w]+)/', include([
@@ -248,7 +283,7 @@ urlpatterns = [
             ])),
         ])),
         url(r'^statistics/$', statistics.AnalyticsView.as_view(), name='statistics'),
-        url(r'^settings/$', general.SettingsView.as_view(), name='settings'),
+        url(r'^settings/$', settings.SettingsView.as_view(), name='settings'),
         url(r'^media/', include([
             url(r'^$', media.MediaListView.as_view(), name='media'),
             url(r'^(?P<document_id>[0-9]+)/', include([
@@ -274,4 +309,4 @@ urlpatterns = [
             ])),
         ])),
     ])),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(django_settings.MEDIA_URL, document_root=django_settings.MEDIA_ROOT)

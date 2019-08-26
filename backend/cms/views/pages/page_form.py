@@ -8,11 +8,11 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.db.models import Q
-from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 
 from ...models import Page, PageTranslation
-from ..general import POSITION_CHOICES
+from ..utils.tree_utils import POSITION_CHOICES
+from ..utils.slug_utils import generate_unique_slug
 
 
 logger = logging.getLogger(__name__)
@@ -64,7 +64,7 @@ class PageForm(forms.ModelForm):
         )
 
         # pop kwarg to make sure the super class does not get this param
-        self.site = kwargs.pop('site', None)
+        self.region = kwargs.pop('region', None)
         language = kwargs.pop('language', None)
 
         # add initial kwarg to make sure changed_data is preserved
@@ -86,7 +86,7 @@ class PageForm(forms.ModelForm):
 
         # limit possible parents to pages of current region
         parent_queryset = Page.objects.filter(
-            site=self.site,
+            region=self.region,
         )
         # limit possible queryset to page which has translation in current language
         for parent in parent_queryset:
@@ -120,7 +120,7 @@ class PageForm(forms.ModelForm):
 
         if not self.instance.id:
             # only update these values when page is created
-            page.site = self.site
+            page.region = self.region
         page.archived = bool(self.data.get('submit_archive'))
         page.save()
         page.move_to(self.cleaned_data['parent'], self.cleaned_data['position'])
@@ -176,7 +176,7 @@ class PageTranslationForm(forms.ModelForm):
         )
 
         # pop kwarg to make sure the super class does not get this param
-        self.site = kwargs.pop('site', None)
+        self.region = kwargs.pop('region', None)
         self.language = kwargs.pop('language', None)
 
         # to set the public value through the submit button, we have to overwrite the field value for public.
@@ -227,36 +227,4 @@ class PageTranslationForm(forms.ModelForm):
         return page_translation
 
     def clean_slug(self):
-
-        slug = self.cleaned_data['slug']
-        # if slug is empty, generate from title
-        if not slug:
-            # slugify to make sure slug doesn't contain special chars etc.
-            slug = slugify(self.cleaned_data['title'])
-            logger.info(
-                'Generate new slug from title %s',
-                slug
-            )
-
-        # make sure slug is unique per region and language
-        unique_slug = slug
-        i = 1
-        while True:
-            other_page_translation = PageTranslation.objects.filter(
-                page__site=self.site,
-                language=self.language,
-                slug=unique_slug
-            ).exclude(id=self.instance.id)
-            if not other_page_translation.exists():
-                break
-            i += 1
-            unique_slug = '{}-{}'.format(slug, i)
-
-        if self.cleaned_data['slug'] != unique_slug:
-            logger.info(
-                'Cleaned slug from %s to %s.',
-                self.cleaned_data['slug'],
-                unique_slug
-            )
-
-        return unique_slug
+        return generate_unique_slug(self, 'page')

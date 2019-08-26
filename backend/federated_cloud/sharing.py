@@ -2,7 +2,7 @@ import hashlib
 
 from django.http import JsonResponse, HttpResponse, HttpRequest
 
-from cms.models import Site
+from cms.models import Region
 from federated_cloud.models import CMSCache
 from federated_cloud.tools import derive_id_from_public_key
 
@@ -38,7 +38,7 @@ def region_data(request: HttpRequest):
     :param request:
     :return: A JSON-response containing meta information of all regions of the cms
     """
-    regions = Site.objects.all()
+    regions = Region.objects.all()
     response_list = [{
         "path": region.slug,
         "aliases": "",

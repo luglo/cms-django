@@ -12,7 +12,7 @@ class CMSCache(models.Model):
 
 
 class RegionCache(models.Model):
-    parentCMS = models.ForeignKey(CMSCache)
+    parentCMS = models.ForeignKey(CMSCache, on_delete=models.CASCADE)
     path = models.CharField(max_length=60)
     postal_code = models.CharField(max_length=10)
     prefix = models.CharField(max_length=100)

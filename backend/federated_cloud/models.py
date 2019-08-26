@@ -5,7 +5,7 @@ class CMSCache(models.Model):
     id = models.CharField(max_length=64, primary_key=True)
     name = models.CharField(max_length=50)
     domain = models.CharField(max_length=50)
-    public_key = models.CharField(max_length=32)
+    public_key = models.CharField(max_length=450)
     useRegions = models.BooleanField(default=False)
     askForCMSs = models.BooleanField(default=True)
     shareWithOthers = models.BooleanField(default=True)

@@ -3,6 +3,7 @@ import hashlib
 from django.http import JsonResponse, HttpResponse, HttpRequest
 
 from cms.models import Region
+from federated_cloud import tools, settings
 from federated_cloud.models import CMSCache
 from federated_cloud.tools import derive_id_from_public_key
 
@@ -14,7 +15,7 @@ def cms_ids(request: HttpRequest):
     """
     response_list = [
         cmsCacheEntry.id for cmsCacheEntry in CMSCache.objects.filter(shareWithOthers=True)
-    ]
+    ] + [settings.get_id()]
     return JsonResponse(response_list, safe=False)
 
 
@@ -24,12 +25,19 @@ def cms_data(request: HttpRequest, cms_id: str):
     :param cms_id: The id of the cms which data is requested
     :return: a JSON-response containing name, domain and public key of the cms specified by cms_id
     """
-    response_cms = CMSCache.objects.get(id=cms_id)
-    response_dict = {
-        "name": response_cms.name,
-        "domain": response_cms.domain,
-        "public_key": response_cms.public_key
-    }
+    if cms_id == settings.get_id():
+        response_dict = {
+            "name": settings.get_name(),
+            "domain": settings.get_domain(),
+            "public_key": settings.get_public_key()
+        }
+    else:
+        response_cms = CMSCache.objects.get(id=cms_id)
+        response_dict = {
+            "name": response_cms.name,
+            "domain": response_cms.domain,
+            "public_key": response_cms.public_key
+        }
     return JsonResponse(response_dict, safe=False)
 
 

@@ -1,6 +1,7 @@
 import os
 import json
 
+from backend import settings
 from cms.models import Configuration
 from federated_cloud.models import CMSCache
 from federated_cloud.tools import derive_id_from_public_key, gen_key_pair_strings
@@ -8,25 +9,19 @@ from federated_cloud.tools import derive_id_from_public_key, gen_key_pair_string
 config_file_path = "backend/federated_cloud/fed_cloud_config.json"
 
 
-def activate_federated_cloud_feature(name: str, domain: str):
-    private_key, public_key = gen_key_pair_strings()
-    Configuration(
-        key="federated_cloud_name",
-        value=name
-    ).save()
-    Configuration(
-        key="federated_cloud_domain",
-        value=domain
-    ).save()
-    # todo: are name and domain already saved in other location?
-    Configuration(
-        key="federated_cloud_public_key",
-        value=public_key
-    ).save()
-    Configuration(
-        key="federated_cloud_private_key",
-        value=private_key
-    ).save()
+def activate_federated_cloud_feature():
+    try:
+        Configuration.objects.get(key="federated_cloud_private_key")
+    except:
+        private_key, public_key = gen_key_pair_strings()
+        Configuration(
+            key="federated_cloud_public_key",
+            value=public_key
+        ).save()
+        Configuration(
+            key="federated_cloud_private_key",
+            value=private_key
+        ).save()
 
 
 def add_cms(name: str, domain: str, public_key: str, useRegions: bool, askForCMSs: bool, shareWithOthers: bool):
@@ -54,10 +49,10 @@ def get_id():
     return derive_id_from_public_key(get_public_key())
 
 def get_name():
-    return Configuration.objects.get(key="federated_cloud_name").value
+    return settings.FEDERATION["name"]
 
 def get_domain():
-    return Configuration.objects.get(key="federated_cloud_domain").value
+    return settings.FEDERATION["domain"]
 
 def get_public_key():
     return Configuration.objects.get(key="federated_cloud_public_key").value

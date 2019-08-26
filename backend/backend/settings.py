@@ -215,3 +215,15 @@ LOGGING = {
         },
     }
 }
+
+FEDERATION = {
+    'name': 'thomas-cms',
+    'domain': 'localhost:8000',
+    'seed_contacts': []
+}
+# todo: change to this:
+# FEDERATION = {
+#    'name': 'My Integreat CMS',
+#    'domain': 'my-domain.com',
+#    'seed_contacts': ['cms.integreat-app.de'],
+# }

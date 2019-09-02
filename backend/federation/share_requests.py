@@ -1,7 +1,11 @@
 import json
+from base64 import urlsafe_b64encode
+
+from Crypto.Random import get_random_bytes
+
 from federation.models import CMSCache, RegionCache
 from federation.settings import get_name, get_domain, get_public_key
-from federation.tools import send_federation_request
+from federation.tools import send_federation_request, verify_signature
 
 
 def ask_for_cms_ids(domain):
@@ -41,4 +45,12 @@ def ask_for_region_data(cms_cache):
 def send_offer(domain: str):
     send_federation_request(domain, "offer", {"name": get_name(), "domain": get_domain(), "public_key": get_public_key()})
 
+def send_challenge(domain: str, public_key: str) -> bool:
+    try:
+        random_bytes = get_random_bytes(100)
+        random_string = urlsafe_b64encode(random_bytes).decode()
+        response = send_federation_request(domain, "challenge", {"challenge": random_string})
+        return verify_signature(random_string, response, public_key)
+    except:
+        return False
 # todo error-handling

@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^cms-data/(?P<cms_id>[0-9,a-z]+)/$', sharing.cms_data),
     url(r'^region-data/', sharing.region_data),
     url(r'^offer/', sharing.receive_offer),
+    url(r'^challenge/', sharing.answer_challenge),
     url(r'^test/', tests.test), #todo: remove test-stuff
     url(r'test-activate', tests.test_activate),
     url(r'test-send-offer', tests.test_send_offer),

@@ -3,7 +3,8 @@ from django.http import JsonResponse, HttpResponse, HttpRequest
 from cms.models import Region
 from federation import settings
 from federation.models import CMSCache
-from federation.tools import derive_id_from_public_key
+from federation.settings import get_private_key
+from federation.tools import derive_id_from_public_key, sign_message
 
 
 def cms_ids(request: HttpRequest):
@@ -68,3 +69,8 @@ def receive_offer(request: HttpRequest):
     cms_new.save()
     return HttpResponse()
 # todo: prefix, name_without_prefix and aliases
+
+def answer_challenge(request: HttpRequest):
+    challenge: str = request.GET["challenge"]
+    response = sign_message(challenge, get_private_key())
+    return HttpResponse(response)

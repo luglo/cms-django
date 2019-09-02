@@ -36,7 +36,7 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
     'cms.apps.CmsConfig',
-    'federated_cloud.apps.FederatedCloudConfig',
+    'federation.apps.FederationConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

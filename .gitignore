@@ -27,7 +27,7 @@ coverage.xml
 # Migrations
 backend/api/migrations/*
 backend/cms/migrations/*
-backend/federated_cloud/migrations/*
+backend/federation/migrations/*
 
 # Django stuff:
 *.log

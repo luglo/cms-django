@@ -1,5 +1,5 @@
-from federated_cloud.models import CMSCache
-from federated_cloud.share_requests import ask_for_cms_ids, ask_for_cms_data, ask_for_region_data
+from federation.models import CMSCache
+from federation.share_requests import ask_for_cms_ids, ask_for_cms_data, ask_for_region_data
 
 
 def update_cms_data():

@@ -7,7 +7,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('cms.urls')),
     url(r'^i18n/', include('django.conf.urls.i18n')),
-    url(r'^federated-cloud/', include('federated_cloud.urls')),
+    url(r'^federation/', include('federation.urls')),
 ]
 
 handler400 = 'cms.views.error_handler.handler400'

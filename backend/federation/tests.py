@@ -1,8 +1,8 @@
 from django.http import HttpResponse
 
-from federated_cloud.settings import *
-from federated_cloud.share_requests import send_offer, ask_for_cms_data
-from federated_cloud.update_checker import update_cms_data
+from federation.settings import *
+from federation.share_requests import send_offer, ask_for_cms_data
+from federation.update_checker import update_cms_data
 
 
 def test(request):
@@ -20,10 +20,8 @@ def test(request):
     return HttpResponse("asdf")
 
 def test_activate(request):
-    name = "thomas"
-    domain = "thomas-ist-cool.de"
-    activate_federated_cloud_feature(name, domain)
-    return HttpResponse("FedCloud-Feature aktiviert.")
+    activate_federation_feature()
+    return HttpResponse("Federation-Feature aktiviert.")
 
 def test_send_offer(request):
     domain="localhost:8000"

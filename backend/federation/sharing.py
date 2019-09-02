@@ -1,11 +1,9 @@
-import hashlib
-
 from django.http import JsonResponse, HttpResponse, HttpRequest
 
 from cms.models import Region
-from federated_cloud import tools, settings
-from federated_cloud.models import CMSCache
-from federated_cloud.tools import derive_id_from_public_key
+from federation import settings
+from federation.models import CMSCache
+from federation.tools import derive_id_from_public_key
 
 
 def cms_ids(request: HttpRequest):

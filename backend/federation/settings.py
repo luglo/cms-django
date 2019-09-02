@@ -1,25 +1,19 @@
-import os
-import json
-
 from backend import settings
 from cms.models import Configuration
-from federated_cloud.models import CMSCache
-from federated_cloud.tools import derive_id_from_public_key, gen_key_pair_strings
+from federation.models import CMSCache
+from federation.tools import derive_id_from_public_key, gen_key_pair_strings
 
-config_file_path = "backend/federated_cloud/fed_cloud_config.json"
-
-
-def activate_federated_cloud_feature():
+def activate_federation_feature():
     try:
-        Configuration.objects.get(key="federated_cloud_private_key")
+        Configuration.objects.get(key="federation_private_key")
     except:
         private_key, public_key = gen_key_pair_strings()
         Configuration(
-            key="federated_cloud_public_key",
+            key="federation_public_key",
             value=public_key
         ).save()
         Configuration(
-            key="federated_cloud_private_key",
+            key="federation_private_key",
             value=private_key
         ).save()
 
@@ -55,7 +49,7 @@ def get_domain():
     return settings.FEDERATION["domain"]
 
 def get_public_key():
-    return Configuration.objects.get(key="federated_cloud_public_key").value
+    return Configuration.objects.get(key="federation_public_key").value
 
 def get_private_key():
-    return Configuration.objects.get(key="federated_cloud_private_key").value
+    return Configuration.objects.get(key="federation_private_key").value

@@ -1,17 +1,17 @@
 import json
-from federated_cloud.models import CMSCache, RegionCache
-from federated_cloud.settings import get_name, get_domain, get_public_key
-from federated_cloud.tools import send_federated_cloud_request
+from federation.models import CMSCache, RegionCache
+from federation.settings import get_name, get_domain, get_public_key
+from federation.tools import send_federation_request
 
 
 def ask_for_cms_ids(domain):
-    response = send_federated_cloud_request(domain, "cms-ids")
+    response = send_federation_request(domain, "cms-ids")
     response_list = json.loads(response)
     return response_list
 
 
 def ask_for_cms_data(domain, cms_id):
-    response = send_federated_cloud_request(domain, "cms-data/" + str(cms_id))
+    response = send_federation_request(domain, "cms-data/" + str(cms_id))
     response_dict = json.loads(response)
     response_cms = CMSCache(
         id=cms_id,
@@ -23,7 +23,7 @@ def ask_for_cms_data(domain, cms_id):
 
 
 def ask_for_region_data(cms_cache):
-    response = send_federated_cloud_request(cms_cache.domain, "region-data")
+    response = send_federation_request(cms_cache.domain, "region-data")
     response_list = json.loads(response)
     for responseElement in response_list:
         RegionCache(
@@ -39,6 +39,6 @@ def ask_for_region_data(cms_cache):
 
 
 def send_offer(domain: str):
-    send_federated_cloud_request(domain, "offer", {"name": get_name(), "domain": get_domain(), "public_key": get_public_key()})
+    send_federation_request(domain, "offer", {"name": get_name(), "domain": get_domain(), "public_key": get_public_key()})
 
 # todo error-handling

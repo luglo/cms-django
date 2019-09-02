@@ -6,8 +6,8 @@ from Crypto.Hash import SHA256
 from base64 import urlsafe_b64encode, urlsafe_b64decode
 
 
-def send_federated_cloud_request(domain: str, tail: str, params=None) -> str:
-    return requests.get("http://" + domain + "/federated-cloud/" + tail, params).text
+def send_federation_request(domain: str, tail: str, params=None) -> str:
+    return requests.get("http://" + domain + "/federation/" + tail, params).text
 
 
 def gen_key_pair_strings():

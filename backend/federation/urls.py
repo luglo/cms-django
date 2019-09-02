@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
-from federated_cloud import sharing, tests
-from federated_cloud.settings import activate_federated_cloud_feature
+from federation import sharing, tests
+from federation.settings import activate_federation_feature
 
 urlpatterns = [
     url(r'^cms-ids/', sharing.cms_ids),
@@ -15,4 +15,4 @@ urlpatterns = [
     url(r'test-ask', tests.test_ask)
 ]
 
-activate_federated_cloud_feature()
+activate_federation_feature()

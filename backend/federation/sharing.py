@@ -12,7 +12,7 @@ def cms_ids(request: HttpRequest):
     :return: a JSON-response containing all region-ids in the cms
     """
     response_list = [
-        cmsCacheEntry.id for cmsCacheEntry in CMSCache.objects.filter(shareWithOthers=True)
+        cmsCacheEntry.id for cmsCacheEntry in CMSCache.objects.filter(share_with_others=True)
     ] + [settings.get_id()]
     return JsonResponse(response_list, safe=False)
 

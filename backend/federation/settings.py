@@ -1,6 +1,5 @@
 from backend import settings
 from cms.models import Configuration
-from federation.models import CMSCache
 from federation.tools import derive_id_from_public_key, gen_key_pair_strings
 
 def activate_federation_feature():
@@ -16,28 +15,6 @@ def activate_federation_feature():
             key="federation_private_key",
             value=private_key
         ).save()
-
-
-def add_cms(name: str, domain: str, public_key: str, useRegions: bool, askForCMSs: bool, shareWithOthers: bool):
-    cms_new = CMSCache(
-        id=derive_id_from_public_key(public_key),
-        name=name,
-        domain=domain,
-        public_key=public_key,
-        useRegions=useRegions,
-        askForCMSs=askForCMSs,
-        shareWithOthers=shareWithOthers
-    )
-    cms_new.save()
-
-
-def update_cms_settings(cms_id: str, useRegion_new: str, askForCMSs_new: str, shareWithOthers_new: str):
-    cms = CMSCache.objects.get(id=cms_id)
-    cms.useRegions = useRegion_new
-    cms.askForCMSs = askForCMSs_new
-    cms.shareWithOthers = shareWithOthers_new
-    cms.save()
-
 
 def get_id():
     return derive_id_from_public_key(get_public_key())

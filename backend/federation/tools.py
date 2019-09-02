@@ -10,11 +10,14 @@ def send_federation_request(domain: str, tail: str, params=None) -> str:
     return requests.get("http://" + domain + "/federation/" + tail, params).text
 
 
-def gen_key_pair_strings():
+def generate_private_key() -> str:
     key_pair = RSA.generate(2048, Random.new().read)
     priv_key_string = key_pair.exportKey('PEM').decode()
-    pub_key_string = key_pair.publickey().exportKey('PEM').decode()
-    return priv_key_string, pub_key_string
+    return priv_key_string
+
+
+def derive_public_key_from_private_key(private_key_string: str) -> str:
+    return RSA.importKey(private_key_string).publickey().exportKey('PEM').decode()
 
 
 def derive_id_from_public_key(public_key_string: str) -> str:

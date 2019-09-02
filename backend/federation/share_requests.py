@@ -4,7 +4,7 @@ from base64 import urlsafe_b64encode
 from Crypto.Random import get_random_bytes
 
 from federation.models import CMSCache, RegionCache
-from federation.settings import get_name, get_domain, get_public_key
+from federation.settings import get_name, get_domain, get_public_key, get_id
 from federation.tools import send_federation_request, verify_signature
 
 
@@ -15,15 +15,16 @@ def ask_for_cms_ids(domain):
 
 
 def ask_for_cms_data(domain, cms_id):
-    response = send_federation_request(domain, "cms-data/" + str(cms_id))
-    response_dict = json.loads(response)
-    response_cms = CMSCache(
-        id=cms_id,
-        name=response_dict["name"],
-        domain=response_dict["domain"],
-        public_key=response_dict["public_key"],
-    )
-    response_cms.save()
+    if cms_id != get_id():
+        response = send_federation_request(domain, "cms-data/" + str(cms_id))
+        response_dict = json.loads(response)
+        response_cms = CMSCache(
+            id=cms_id,
+            name=response_dict["name"],
+            domain=response_dict["domain"],
+            public_key=response_dict["public_key"],
+        )
+        response_cms.save()
 
 
 def ask_for_region_data(cms_cache):

@@ -91,7 +91,8 @@ class RecurrenceRule(models.Model):
     interval = models.IntegerField(default=1, validators=[MinValueValidator(1)])
     weekdays_for_weekly = ArrayField(
         models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(6)]),
-        null=True)
+        null=True
+    )
     weekday_for_monthly = models.IntegerField(null=True)
     week_for_monthly = models.IntegerField(
         null=True,
@@ -129,18 +130,17 @@ class Event(models.Model):
     recurrence_rule = models.OneToOneField(RecurrenceRule, null=True, on_delete=models.SET_NULL)
     picture = models.ImageField(null=True, blank=True, upload_to='events/%Y/%m/%d')
 
-    # TODO: fix error with None values when this method is commented in
-    # def clean(self):
-    #     if self.start_date is None or self.end_date is None:
-    #         raise ValidationError(_('Start date and end date mustn\'t be empty'), code='required')
-    #     if self.recurrence_rule:
-    #         if self.recurrence_rule.end_date <= self.start_date:
-    #             raise ValidationError(_('Recurrence end date has to be after the event\'s start date'), code='invalid')
-    #     if (self.start_time is None) ^ (self.end_time is None):
-    #         raise ValidationError(_('Start time and end time must either be both empty or both filled out'), code='invalid')
-    #     if self.end_date < self.start_date or (
-    #             self.end_date == self.start_date and self.end_time < self.start_time):
-    #         raise ValidationError(_('The end of the event can\'t be before the start of the event'), code='invalid')
+    def clean(self):
+        if self.start_date is None or self.end_date is None:
+            raise ValidationError(_('Start date and end date mustn\'t be empty'), code='required')
+        if self.recurrence_rule:
+            if self.recurrence_rule.end_date <= self.start_date:
+                raise ValidationError(_('Recurrence end date has to be after the event\'s start date'), code='invalid')
+        if (self.start_time is None) ^ (self.end_time is None):
+            raise ValidationError(_('Start time and end time must either be both empty or both filled out'), code='invalid')
+        if self.end_date < self.start_date or (
+                self.end_date == self.start_date and self.end_time < self.start_time):
+            raise ValidationError(_('The end of the event can\'t be before the start of the event'), code='invalid')
 
     @property
     def languages(self):

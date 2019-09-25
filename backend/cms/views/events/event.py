@@ -6,10 +6,9 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView
 
-from ..events import EventForm, EventTranslationForm
-from ..pois import POIForm, POITranslationForm
+from .event_form import EventForm, EventTranslationForm, RecurrenceRuleForm
 from ...decorators import region_permission_required
-from ...models import Region, Language, Event, EventTranslation, POI, POITranslation
+from ...models import Region, Language, Event, EventTranslation, RecurrenceRule
 
 
 @method_decorator(login_required, name='dispatch')
@@ -27,50 +26,51 @@ class EventView(PermissionRequiredMixin, TemplateView):
 
         # get event and event translation objects if they exist, otherwise objects are None
         event = Event.objects.filter(id=kwargs.get('event_id')).first()
+        recurrence_rule_instance = RecurrenceRule.objects.filter(event=event).first()
         event_translation = EventTranslation.objects.filter(
             event=event,
             language=language
         ).first()
 
+        recurrence_rule_form = RecurrenceRuleForm(
+            instance=recurrence_rule_instance
+        )
         event_form = EventForm(
             instance=event,
-            region=region
         )
         event_translation_form = EventTranslationForm(
             instance=event_translation
         )
 
-        # poi_form = POIForm(initial={
-        #     'address': l.address,
-        #     'postcode': l.postcode,
-        #     'city': l.city,
-        #     'region': l.region,
-        #     'country': l.country,
-        #
-        # })
         return render(request, self.template_name, {
             'event_form': event_form,
             'event_translation_form': event_translation_form,
+            'recurrence_rule_form': recurrence_rule_form,
             'event': event,
             'language': language,
             'languages': region.languages,
             **self.base_context
         })
 
+    # pylint: disable=too-many-locals,too-many-branches
     def post(self, request, *args, **kwargs):
         region = Region.objects.get(slug=kwargs.get('region_slug'))
         language = Language.objects.get(code=kwargs.get('language_code'))
 
         event_instance = Event.objects.filter(id=kwargs.get('event_id')).first()
+        recurrence_rule_instance = RecurrenceRule.objects.filter(event=event_instance).first()
         event_translation_instance = EventTranslation.objects.filter(
             event=event_instance,
             language=language,
         ).first()
 
+        recurrence_rule_form = RecurrenceRuleForm(
+            request.POST,
+            instance=recurrence_rule_instance
+        )
         event_form = EventForm(
             request.POST,
             instance=event_instance,
-            region=region
         )
         event_translation_form = EventTranslationForm(
             request.POST,
@@ -79,13 +79,27 @@ class EventView(PermissionRequiredMixin, TemplateView):
             language=language
         )
         # TODO: error handling
-        # poi_form = POIForm(request.POST, user=request.user)
-        if event_form.is_valid() and event_translation_form.is_valid():# or poi_form.is_valid():
+        if (
+                event_form.is_valid() and
+                event_translation_form.is_valid() and
+                (
+                    recurrence_rule_form.is_valid() or
+                    not event_form.cleaned_data['is_recurring']
+                )
+        ):
 
-            event = event_form.save()
+            if event_form.cleaned_data['is_recurring']:
+                recurrence_rule = recurrence_rule_form.save()
+            else:
+                recurrence_rule = None
+
+            event = event_form.save(
+                region=region,
+                recurrence_rule=recurrence_rule
+            )
             event_translation = event_translation_form.save(
                 event=event,
-                user=request.user,
+                user=request.user
             )
 
             if event_form.has_changed() or event_translation_form.has_changed():
@@ -100,14 +114,14 @@ class EventView(PermissionRequiredMixin, TemplateView):
                 elif not event_translation_instance:
                     if published:
                         messages.success(request,
-                                         _('Translation was successfully created and published.'))
+                                         _('Event translation was successfully created and published.'))
                     else:
-                        messages.success(request, _('Translation was successfully created.'))
+                        messages.success(request, _('Event translation was successfully created.'))
                 else:
                     if published:
-                        messages.success(request, _('Translation was successfully published.'))
+                        messages.success(request, _('Event translation was successfully published.'))
                     else:
-                        messages.success(request, _('Translation was successfully saved.'))
+                        messages.success(request, _('Event translation was successfully saved.'))
             else:
                 messages.info(request, _('No changes detected.'))
 
@@ -123,6 +137,7 @@ class EventView(PermissionRequiredMixin, TemplateView):
             **self.base_context,
             'event_form': event_form,
             'event_translation_form': event_translation_form,
+            'recurrence_rule_form': recurrence_rule_form,
             'event': event_instance,
             'language': language,
             'languages': region.languages,

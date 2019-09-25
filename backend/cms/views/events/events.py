@@ -10,6 +10,7 @@ from ...models import Language, Region, Event
 
 
 @method_decorator(region_permission_required, name='dispatch')
+# pylint: disable=too-many-ancestors
 class EventListView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
     permission_required = 'cms.view_events'
     raise_exception = True

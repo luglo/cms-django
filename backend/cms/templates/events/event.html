@@ -41,7 +41,8 @@
 
         <div class="flex flex-wrap">
             <div class="w-2/3 pr-2">
-                {{ event_form.errors }}
+	            {{ recurrence_rule_form.errors }}
+	            {{ event_form.errors }}
                 {{ event_translation_form.errors }}
                 <div class="w-full p-4 mb-4 rounded border border-solid border-grey-light shadow bg-white">
                     <label class="block mb-2 font-bold">{% trans 'Title' %}</label>

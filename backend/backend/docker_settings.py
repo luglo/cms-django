@@ -1,5 +1,6 @@
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
+from .settings import *
 
 DATABASES = {
     'default': {

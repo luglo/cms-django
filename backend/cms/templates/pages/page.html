@@ -177,6 +177,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="py-2 border-b solid border-grey-lighter mb-2">
+                    <label for="status" class="font-bold">{% trans 'Mirrored Page' %}</label>
+                    <div class="relative my-2">
+                        {% render_field page_form.mirrored_page id="mirrored_page" class="block appearance-none w-full bg-grey-lighter border border-grey-lighter text-grey-darkest py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-grey" %}
+                        <div class="pointer-events-none absolute pin-y pin-r flex items-center px-2 text-grey-darkest">
+                            <img src="{% static 'svg/select-down-arrow.svg' %}" class="fill-current h-4 w-4" />
+                        </div>
+                    </div>
+                </div>
                 <div class="pt-2 pb-4">
                     <span class="block font-bold mb-4">{% trans 'Icon' %}</span>
                     {% render_field page_form.icon id="icon" class="image-field" %}

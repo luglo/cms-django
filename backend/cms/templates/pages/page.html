@@ -185,6 +185,9 @@
                             <img src="{% static 'svg/select-down-arrow.svg' %}" class="fill-current h-4 w-4" />
                         </div>
                     </div>
+                    <div class="relative my-2">
+                        {% render_field page_form.mirrored_page_first id="mirrored_page_first" class="" %}
+                    </div>
                 </div>
                 <div class="pt-2 pb-4">
                     <span class="block font-bold mb-4">{% trans 'Icon' %}</span>

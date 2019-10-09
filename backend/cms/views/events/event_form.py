@@ -12,6 +12,7 @@ from ...models import Event, EventTranslation, RecurrenceRule
 
 
 class RecurrenceRuleForm(forms.ModelForm):
+    has_recurrence_end_date = forms.BooleanField(required=False)
 
     class Meta:
         model = RecurrenceRule
@@ -63,7 +64,6 @@ class EventForm(forms.ModelForm):
     """
     is_all_day = forms.BooleanField(required=False)
     is_recurring = forms.BooleanField(required=False)
-    has_recurrence_end_date = forms.BooleanField(required=False)
 
     class Meta:
         model = Event

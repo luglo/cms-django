@@ -1,3 +1,5 @@
+from datetime import time
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -25,28 +27,35 @@ class EventView(PermissionRequiredMixin, TemplateView):
         language = Language.objects.get(code=kwargs.get('language_code'))
 
         # get event and event translation objects if they exist, otherwise objects are None
-        event = Event.objects.filter(id=kwargs.get('event_id')).first()
-        recurrence_rule_instance = RecurrenceRule.objects.filter(event=event).first()
-        event_translation = EventTranslation.objects.filter(
-            event=event,
+        event_instance = Event.objects.filter(id=kwargs.get('event_id')).first()
+        recurrence_rule_instance = RecurrenceRule.objects.filter(event=event_instance).first()
+        event_translation_instance = EventTranslation.objects.filter(
+            event=event_instance,
             language=language
         ).first()
 
         recurrence_rule_form = RecurrenceRuleForm(
-            instance=recurrence_rule_instance
+            instance=recurrence_rule_instance,
+            initial={
+                'has_recurrence_end_date': recurrence_rule_instance.end_date is not None
+            }
         )
         event_form = EventForm(
-            instance=event,
+            instance=event_instance,
+            initial={
+                'is_all_day': event_instance.start_time == time.min and event_instance.end_time == time.max,
+                'is_recurring': event_instance.recurrence_rule is not None
+            }
         )
         event_translation_form = EventTranslationForm(
-            instance=event_translation
+            instance=event_translation_instance
         )
 
         return render(request, self.template_name, {
             'event_form': event_form,
             'event_translation_form': event_translation_form,
             'recurrence_rule_form': recurrence_rule_form,
-            'event': event,
+            'event': event_instance,
             'language': language,
             'languages': region.languages,
             **self.base_context
@@ -80,12 +89,12 @@ class EventView(PermissionRequiredMixin, TemplateView):
         )
         # TODO: error handling
         if (
-                event_form.is_valid() and
-                event_translation_form.is_valid() and
-                (
-                    recurrence_rule_form.is_valid() or
-                    not event_form.cleaned_data['is_recurring']
-                )
+            event_form.is_valid() and
+            event_translation_form.is_valid() and
+            (
+                recurrence_rule_form.is_valid() or
+                not event_form.cleaned_data['is_recurring']
+            )
         ):
 
             if event_form.cleaned_data['is_recurring']:

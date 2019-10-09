@@ -124,9 +124,9 @@ class Event(models.Model):
     region = models.ForeignKey(Region, on_delete=models.CASCADE)
     location = models.ForeignKey(POI, on_delete=models.PROTECT, null=True, blank=True)
     start_date = models.DateField()
-    start_time = models.TimeField(null=True)
+    start_time = models.TimeField(blank=True)
     end_date = models.DateField()
-    end_time = models.TimeField(null=True)
+    end_time = models.TimeField(blank=True)
     recurrence_rule = models.OneToOneField(RecurrenceRule, null=True, on_delete=models.SET_NULL)
     picture = models.ImageField(null=True, blank=True, upload_to='events/%Y/%m/%d')
 
